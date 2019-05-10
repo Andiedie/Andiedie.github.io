@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html class="theme-next gemini" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+  <meta name="google-site-verification" content="aKFe-l6Y-FYv_TGfjx70Zpmqy38r4zTmQEf8Gal6Gcs">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link rel="stylesheet" href="//fonts.lug.ustc.edu.cn/css?family=Lato:300,300italic,400,400italic,700,700italic|Rationale:300,300italic,400,400italic,700,700italic|Source Code Pro:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext">
+  
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=6.7.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-smile.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-smile.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-smile.png?v=6.7.0">
+
+
+  <link rel="mask-icon" href="/images/smile.svg?v=6.7.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.7.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="这篇博客主要介绍如何使用 Apktool、dex2jar、jd-gui等工具反编译 Android APP、修改源码、重新打包并签名。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android 反编译、修改、重打包与签名">
+<meta property="og:url" content="http://blog.andiedie.cn/posts/552a/index.html">
+<meta property="og:site_name" content="Andie&#39;s Blog">
+<meta property="og:description" content="这篇博客主要介绍如何使用 Apktool、dex2jar、jd-gui等工具反编译 Android APP、修改源码、重新打包并签名。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://blog.andiedie.cn/assets/image-20190211172815715.png">
+<meta property="og:image" content="http://blog.andiedie.cn/assets/image-20190211175802805.png">
+<meta property="og:updated_time" content="2019-05-10T13:08:07.541Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android 反编译、修改、重打包与签名">
+<meta name="twitter:description" content="这篇博客主要介绍如何使用 Apktool、dex2jar、jd-gui等工具反编译 Android APP、修改源码、重新打包并签名。">
+<meta name="twitter:image" content="http://blog.andiedie.cn/assets/image-20190211172815715.png">
+
+
+
+  <link rel="alternate" href="/feed.xml" title="Andie's Blog" type="application/atom+xml">
+
+
+
+
+  <link rel="canonical" href="http://blog.andiedie.cn/posts/552a/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Android 反编译、修改、重打包与签名 | Andie's Blog</title>
+  
+
+
+
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-126454098-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-126454098-1');
+  </script>
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Andie's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.andiedie.cn/posts/552a/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Andie">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar-smile.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Andie's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android 反编译、修改、重打包与签名
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-02-11 14:39:49" itemprop="dateCreated datePublished" datetime="2019-02-11T14:39:49+08:00">2019-02-11</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-05-10 21:08:07" itemprop="dateModified" datetime="2019-05-10T21:08:07+08:00">2019-05-10</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Tutorial/" itemprop="url" rel="index"><span itemprop="name">Tutorial</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/posts/552a/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/posts/552a/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+            <span id="/posts/552a/" class="leancloud_visitors" data-flag-title="Android 反编译、修改、重打包与签名">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>这篇博客主要介绍如何使用 Apktool、dex2jar、jd-gui等工具反编译 Android APP、修改源码、重新打包并签名。</p>
+<a id="more"></a>
+<h1 id="1-工具安装"><a href="#1-工具安装" class="headerlink" title="1. 工具安装"></a>1. 工具安装</h1><h2 id="1-1-Apktool"><a href="#1-1-Apktool" class="headerlink" title="1.1. Apktool"></a>1.1. Apktool</h2><p>Apktool 主要用于反编译和重编译 APK 文件。</p>
+<p>Windows 和 Linux 安装方法参照：<a href="https://ibotpeaches.github.io/Apktool/install/" target="_blank" rel="noopener">官方指南</a></p>
+<p>macOS 安装方法如下：</p>
+<ul>
+<li>右键保存<a href="https://raw.githubusercontent.com/iBotPeaches/Apktool/master/scripts/osx/apktool" target="_blank" rel="noopener">启动脚本</a>，命名为 <code>apktool</code></li>
+<li>下载<a href="https://bitbucket.org/iBotPeaches/apktool/downloads/" target="_blank" rel="noopener">最新版本</a>的 Apktool，命名为 <code>apktool.jar</code></li>
+<li>将 <code>apktool</code> 和 <code>apktool.jar</code> 移动到 <code>/usr/local/bin</code> 目录下</li>
+<li>使用 <code>chmod +x apktool</code> 和 <code>chmod +x apktool.jar</code> 添加运行权限</li>
+<li>在命令行直接运行命令 <code>apktool</code> 即可，安装完成</li>
+</ul>
+<h2 id="1-2-dex2jar"><a href="#1-2-dex2jar" class="headerlink" title="1.2. dex2jar"></a>1.2. dex2jar</h2><p>dex2jar 主要用于将 dex 文件转为 jar 文件</p>
+<p>从 <a href="https://github.com/pxb1988/dex2jar/releases" target="_blank" rel="noopener">GitHub</a> 下载最新版本，并解压。运行解压后目录下的 <code>d2j-dex2jar.sh</code> 或 <code>d2j-dex2jar.bat</code> 即可。</p>
+<h2 id="1-3-jd-gui"><a href="#1-3-jd-gui" class="headerlink" title="1.3. jd-gui"></a>1.3. jd-gui</h2><p>jd-gui 主要用来可视化 jar 文件。</p>
+<p>从 <a href="https://github.com/java-decompiler/jd-gui/releases" target="_blank" rel="noopener">GitHub</a> 下载最新版本，并解压。运行解压后目录下的 <code>JD-GUI</code> 即可。</p>
+<p><strong>macOS 下注意</strong>：</p>
+<p>如果 jd-gui 无法打开，编辑 <code>JD-GUI.app/Contents/MacOS/universalJavaApplicationStub.sh</code></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">exec</span> <span class="string">"<span class="variable">$JAVACMD</span>"</span> \</span><br><span class="line">	-cp <span class="string">"<span class="variable">$&#123;JVMClassPath&#125;</span>"</span> \</span><br><span class="line">	-Xdock:icon=<span class="string">"<span class="variable">$&#123;ResourcesFolder&#125;</span>/<span class="variable">$&#123;CFBundleIconFile&#125;</span>"</span> \</span><br><span class="line">	-Xdock:name=<span class="string">"<span class="variable">$&#123;CFBundleName&#125;</span>"</span> \</span><br><span class="line">	<span class="comment">## ----- 添加这两行 -----</span></span><br><span class="line">	--add-opens java.base/jdk.internal.loader=ALL-UNNAMED \</span><br><span class="line">	--add-opens jdk.zipfs/jdk.nio.zipfs=ALL-UNNAMED \</span><br><span class="line">	<span class="comment">## --------------------</span></span><br><span class="line">	<span class="variable">$&#123;JVMOptions:+$JVMOptions &#125;</span>\</span><br><span class="line">	<span class="variable">$&#123;JVMDefaultOptions:+$JVMDefaultOptions &#125;</span>\</span><br><span class="line">	<span class="variable">$&#123;JVMMainClass&#125;</span>\</span><br><span class="line">	<span class="variable">$&#123;JVMArguments:+ $JVMArguments&#125;</span></span><br></pre></td></tr></table></figure>
+<p>详见 <a href="https://github.com/java-decompiler/jd-gui/issues/196" target="_blank" rel="noopener">issue</a></p>
+<h1 id="2-查看源码"><a href="#2-查看源码" class="headerlink" title="2. 查看源码"></a>2. 查看源码</h1><p>以小米投屏神器 APP 为例。</p>
+<p>运行 d2j-dex2jar.sh 将 APK 中的 dex 文件转为 jar 文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ ./d2j-dex2jar.sh mi.apk</span><br><span class="line">dex2jar mi.apk -&gt; ./mi-dex2jar.jar</span><br></pre></td></tr></table></figure>
+<p>打开 jd-gui，将 <code>mi-dex2jar.jar</code> 拖进去，即可看到反编译后的源码。</p>
+<p><img src="/assets/image-20190211172815715.png" alt="image-20190211172815715"></p>
+<h1 id="3-修改源码"><a href="#3-修改源码" class="headerlink" title="3. 修改源码"></a>3. 修改源码</h1><p>这里以增加 Log 为修改源码的例子。</p>
+<p>jd-gui 只能查看源码，但是无法修改。要修改源码，只能修改 <code>smali</code> 文件，它类似于汇编，但是要简单很多。</p>
+<p>首先得使用 apktool 进行反编译：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apktool d mi.apk -o mi</span><br></pre></td></tr></table></figure>
+<p>这里将 <code>mi.apk</code> 进行反编译并将结果放到 <code>mi</code> 目录中。</p>
+<p>首先找到需要添加 Log 的位置，建议在 jd-gui 中寻找，然后在 <code>mi</code> 目录中定位。</p>
+<p>例如以下 <code>class</code> 和 <code>smali</code> 的对应关系</p>
+<ul>
+<li><code>mi-dex2jar.jar!/com/xiaomi/mitv/phone/tvassistant/b/a.class</code></li>
+<li><code>mi/smali/com/xiaomi/mitv/phone/tvassistant/b/a.smali</code></li>
+</ul>
+<p>打开 <code>a.class</code> 和  <code>a.smali</code>，首先看 <code>java</code>：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">a</span><span class="params">(<span class="keyword">int</span> paramInt)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    String str1 = String.valueOf(System.currentTimeMillis());</span><br><span class="line">    String str2 = a(String.valueOf(paramInt), <span class="keyword">this</span>.b, str1);</span><br><span class="line">    <span class="keyword">new</span> c(<span class="keyword">this</span>.d, String.format(<span class="string">"http://%s:6095/general?action=setVolum&amp;volum=%d&amp;ts=%s&amp;sign=%s"</span>, <span class="keyword">new</span> Object[] &#123; <span class="keyword">this</span>.a, Integer.valueOf(paramInt), str1, str2 &#125;), <span class="keyword">new</span> c.a()</span><br><span class="line">          &#123;</span><br><span class="line">              <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">a</span><span class="params">(<span class="keyword">int</span> paramAnonymousInt, String paramAnonymousString)</span> </span>&#123;&#125;</span><br><span class="line">          &#125;).d();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对应的 <code>smali</code> 文件内容，为了简单，我只提取了部分内容。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">.method public a(I)V</span><br><span class="line">    <span class="comment"># a 是方法，p0 = this</span></span><br><span class="line">    <span class="comment"># a 接收一个参数, p1 = paramInt'</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 定义了 8 个寄存器</span></span><br><span class="line">    .locals 8</span><br><span class="line"></span><br><span class="line">    .prologue</span><br><span class="line">    .line 55</span><br><span class="line">    <span class="comment"># 获取系统当前时间</span></span><br><span class="line">    invoke-static &#123;&#125;, Ljava/lang/System;-&gt;currentTimeMillis()J</span><br><span class="line">    <span class="comment"># 结果赋值给 v0</span></span><br><span class="line">    move-result-wide v0</span><br><span class="line">    <span class="comment"># 调用 String.valueOf 方法，将 v0 转为字符串</span></span><br><span class="line">    invoke-static &#123;v0, v1&#125;, Ljava/lang/String;-&gt;valueOf(J)Ljava/lang/String;</span><br><span class="line">    <span class="comment"># 结果赋值给 v0</span></span><br><span class="line">    move-result-object v0</span><br><span class="line">    <span class="comment"># 到这一步</span></span><br><span class="line">    <span class="comment"># String str1 = String.valueOf(System.currentTimeMillis());</span></span><br><span class="line">    <span class="comment"># 执行完了</span></span><br><span class="line"></span><br><span class="line">    .line 57</span><br><span class="line">    <span class="comment"># 调用 String.valueOf 方法 p1 转为字符串</span></span><br><span class="line">    invoke-static &#123;p1&#125;, Ljava/lang/String;-&gt;valueOf(I)Ljava/lang/String;</span><br><span class="line">    <span class="comment"># 结果赋值给 v1</span></span><br><span class="line">    move-result-object v1</span><br><span class="line">	<span class="comment"># 获取 this.b，也就是从 p1 中获取 b，并赋值给 v2</span></span><br><span class="line">    iget-object v2, p0, Lcom/xiaomi/mitv/phone/tvassistant/b/a;-&gt;b:Ljava/lang/String;</span><br><span class="line">    <span class="comment"># 将 v1，v2，v0 作为参数调用方法 a，并传递 p0 作为 this</span></span><br><span class="line">    invoke-direct &#123;p0, v1, v2, v0&#125;, Lcom/xiaomi/mitv/phone/tvassistant/b/a;-&gt;a(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;</span><br><span class="line">    <span class="comment"># 将结果赋值给 v1</span></span><br><span class="line">    move-result-object v1</span><br><span class="line">    <span class="comment"># 到这一步</span></span><br><span class="line">    <span class="comment"># String str2 = a(String.valueOf(paramInt), this.b, str1);</span></span><br><span class="line">    <span class="comment"># 执行完了</span></span><br><span class="line">    </span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
+<p>假设我们想要得知其中 <code>this.b</code> 的值，可以这样添加 Log：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">.method public a(I)V</span><br><span class="line">    <span class="comment"># 额外定义 4 个寄存器用于存储 TAG</span></span><br><span class="line">    .locals 12</span><br><span class="line"></span><br><span class="line">    .prologue</span><br><span class="line">    .line 55</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 设置初始化TAG</span></span><br><span class="line">    const-string v8, <span class="string">"AndiedieHack.currentTimeMillis"</span></span><br><span class="line"></span><br><span class="line">    const-string v9, <span class="string">"AndiedieHack.param"</span></span><br><span class="line"></span><br><span class="line">    const-string v10, <span class="string">"AndiedieHack.b"</span></span><br><span class="line"></span><br><span class="line">    const-string v11, <span class="string">"AndiedieHack.result"</span></span><br><span class="line"></span><br><span class="line">    invoke-static &#123;&#125;, Ljava/lang/System;-&gt;currentTimeMillis()J</span><br><span class="line"></span><br><span class="line">    move-result-wide v0</span><br><span class="line"></span><br><span class="line">    invoke-static &#123;v0, v1&#125;, Ljava/lang/String;-&gt;valueOf(J)Ljava/lang/String;</span><br><span class="line"></span><br><span class="line">    move-result-object v0</span><br><span class="line">    <span class="comment"># 第一个 Log，使用 v8 作为 TAG，输出 v0 的值，即系统当前时间</span></span><br><span class="line">    invoke-static &#123;v8, v0&#125;, Landroid/util/Log;-&gt;d(Ljava/lang/String;Ljava/lang/String;)I</span><br><span class="line"></span><br><span class="line">    .line 57</span><br><span class="line">    invoke-static &#123;p1&#125;, Ljava/lang/String;-&gt;valueOf(I)Ljava/lang/String;</span><br><span class="line"></span><br><span class="line">    move-result-object v1</span><br><span class="line">    <span class="comment"># 第二个 Log，使用 v9 作为 TAG，输出 v1 的值</span></span><br><span class="line">    <span class="comment"># v1 是 p1 的字符串形式，p1 是函数参数</span></span><br><span class="line">    invoke-static &#123;v9, v1&#125;, Landroid/util/Log;-&gt;d(Ljava/lang/String;Ljava/lang/String;)I</span><br><span class="line"></span><br><span class="line">    iget-object v2, p0, Lcom/xiaomi/mitv/phone/tvassistant/b/a;-&gt;b:Ljava/lang/String;</span><br><span class="line">    <span class="comment"># 第三个 Log，使用 v10 作为 TAG，输出 v2 的值，即 this.b</span></span><br><span class="line">    invoke-static &#123;v10, v2&#125;, Landroid/util/Log;-&gt;d(Ljava/lang/String;Ljava/lang/String;)I</span><br><span class="line"></span><br><span class="line">    invoke-direct &#123;p0, v1, v2, v0&#125;, Lcom/xiaomi/mitv/phone/tvassistant/b/a;-&gt;a(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;</span><br><span class="line"></span><br><span class="line">    move-result-object v1</span><br><span class="line">    <span class="comment"># 第四个 Log，使用 v11 作为 TAG，输出 v1 的值，即 str2</span></span><br><span class="line">    invoke-static &#123;v11, v1&#125;, Landroid/util/Log;-&gt;d(Ljava/lang/String;Ljava/lang/String;)I</span><br></pre></td></tr></table></figure>
+<p>到这一步，源码修改完成。接下来进行重新打包。</p>
+<h1 id="3-重新打包与签名"><a href="#3-重新打包与签名" class="headerlink" title="3. 重新打包与签名"></a>3. 重新打包与签名</h1><p>将修改后的内容重新打包为 APK：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apktool b mi -o unsigned.apk</span><br></pre></td></tr></table></figure>
+<p>打包之后的 <code>unsigned.apk</code> 是没有签名的，无法安装。</p>
+<p>签名需要使用一个 <code>keystore</code>，可以直接使用 Android Studio 为我们生成的 debug 用 keystore。</p>
+<p>位置在 <code>用户目录/.android/debug.keystore</code>，<code>alias</code> 是 <code>androiddebugkey</code>，密码是 <code>android</code></p>
+<p>签名命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jarsigner -keystore debug.keystore -signedjar signed.apk  unsigned.apk  androiddebugkey</span><br></pre></td></tr></table></figure>
+<p>输入密码即可。</p>
+<h1 id="4-测试"><a href="#4-测试" class="headerlink" title="4. 测试"></a>4. 测试</h1><p>在手机上安装 <code>signed.apk</code>，注意如果之前已经安装了投屏神器，需要先卸载，因为两者的签名不一致。</p>
+<p>运行 APP，调整音量，可以看到以下 Log：</p>
+<p><img src="/assets/image-20190211175802805.png" alt="image-20190211175802805"></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+      <div>
+        
+
+
+
+  
+
+
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Andie</li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    
+    <a href="http://blog.andiedie.cn/posts/552a/" title="Android 反编译、修改、重打包与签名">http://blog.andiedie.cn/posts/552a/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/posts/cc60/" rel="next" title="移动设备抓包">
+                <i class="fa fa-chevron-left"></i> 移动设备抓包
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/posts/cb98/" rel="prev" title="TVPause : 接打电话时自动暂停电视">
+                TVPause : 接打电话时自动暂停电视 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar-smile.png" alt="Andie">
+            
+              <p class="site-author-name" itemprop="name">Andie</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">16</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">5</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/feed.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/Andiedie" title="GitHub &rarr; https://github.com/Andiedie" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:zchangan@163.com" title="E-Mail &rarr; mailto:zchangan@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            </div>
+          
+
+          
+             <div class="cc-license motion-element" itemprop="license">
+              
+                
+              
+              
+              
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+             </div>
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-工具安装"><span class="nav-text">1. 工具安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-Apktool"><span class="nav-text">1.1. Apktool</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-dex2jar"><span class="nav-text">1.2. dex2jar</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3-jd-gui"><span class="nav-text">1.3. jd-gui</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-查看源码"><span class="nav-text">2. 查看源码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-修改源码"><span class="nav-text">3. 修改源码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-重新打包与签名"><span class="nav-text">3. 重新打包与签名</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-测试"><span class="nav-text">4. 测试</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Andie</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.7.0"></script>
+
+  <script src="/js/src/motion.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/affix.js?v=6.7.0"></script>
+
+  <script src="/js/src/schemes/pisces.js?v=6.7.0"></script>
+
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=6.7.0"></script>
+<script src="/js/src/post-details.js?v=6.7.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+
+
+  
+
+<script src="//cdn1.lncld.net/static/js/3.11.1/av-min.js"></script>
+
+
+
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+
+<script>
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(function (item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: true,
+    appId: 'VVPQKgngmGHeLTvsuOfEB25g-gzGzoHsz',
+    appKey: 'ayIKVGYRUpGNN6IJHzR7H2kS',
+    placeholder: 'Comment here',
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: true
+  });
+</script>
+
+
+
+  
+
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+      }
+      else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+  
+
+  
+  
+
+  
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  <style>
+    .copy-btn {
+      display: inline-block;
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 20px;
+      color: #333;
+      white-space: nowrap;
+      vertical-align: middle;
+      cursor: pointer;
+      background-color: #eee;
+      background-image: linear-gradient(#fcfcfc, #eee);
+      border: 1px solid #d5d5d5;
+      border-radius: 3px;
+      user-select: none;
+      outline: 0;
+    }
+
+    .highlight-wrap .copy-btn {
+      transition: opacity .3s ease-in-out;
+      opacity: 0;
+      padding: 2px 6px;
+      position: absolute;
+      right: 4px;
+      top: 8px;
+    }
+
+    .highlight-wrap:hover .copy-btn,
+    .highlight-wrap .copy-btn:focus {
+      opacity: 1
+    }
+
+    .highlight-wrap {
+      position: relative;
+    }
+  </style>
+  <script>
+    $('.highlight').each(function (i, e) {
+      var $wrap = $('<div>').addClass('highlight-wrap');
+      $(e).after($wrap);
+      $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function (e) {
+        var code = $(this).parent().find('.code').find('.line').map(function (i, e) {
+          return $(e).text();
+        }).toArray().join('\n');
+        var ta = document.createElement('textarea');
+        var range = document.createRange(); //For Chrome
+        var sel = window.getSelection(); //For Chrome
+        var yPosition = window.pageYOffset || document.documentElement.scrollTop;
+        ta.style.top = yPosition + 'px'; //Prevent page scroll
+        ta.style.position = 'absolute';
+        ta.style.opacity = '0';
+        ta.value = code;
+        ta.textContent = code; //For FireFox
+        ta.contentEditable = true;
+        ta.readOnly = false;
+        document.body.appendChild(ta);
+        range.selectNode(ta);
+        sel.removeAllRanges();
+        sel.addRange(range);
+        ta.setSelectionRange(0, code.length);
+        var result = document.execCommand('copy');
+        
+          if (result) $(this).text('复制成功');
+          else $(this).text('复制失败');
+        
+        ta.blur(); //For iOS
+        $(this).blur();
+      })).on('mouseleave', function (e) {
+        var $b = $(this).find('.copy-btn');
+        setTimeout(function () {
+          $b.text('复制');
+        }, 300);
+      }).append(e);
+    })
+  </script>
+
+
+  
+
+</body>
+</html>

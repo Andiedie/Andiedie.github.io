@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html class="theme-next gemini" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+  <meta name="google-site-verification" content="aKFe-l6Y-FYv_TGfjx70Zpmqy38r4zTmQEf8Gal6Gcs">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link rel="stylesheet" href="//fonts.lug.ustc.edu.cn/css?family=Lato:300,300italic,400,400italic,700,700italic|Rationale:300,300italic,400,400italic,700,700italic|Source Code Pro:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext">
+  
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=6.7.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-smile.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-smile.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-smile.png?v=6.7.0">
+
+
+  <link rel="mask-icon" href="/images/smile.svg?v=6.7.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.7.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="B 站的稍后再看功能明显是一个半成品，有许多不完善的地方，其中最致命的就是无法加入和播放番剧。最近我终于忍受不了它的诸多问题，着手开发了一个油猴脚本 Bilibili Watchlater Plus，对稍后再看功能进行了一番改造。开源地址：bilibili-watchlater-plus。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Bilibili Watchlater Plus : 让 B 站的稍后再看更好用">
+<meta property="og:url" content="http://blog.andiedie.cn/posts/7a6d/index.html">
+<meta property="og:site_name" content="Andie&#39;s Blog">
+<meta property="og:description" content="B 站的稍后再看功能明显是一个半成品，有许多不完善的地方，其中最致命的就是无法加入和播放番剧。最近我终于忍受不了它的诸多问题，着手开发了一个油猴脚本 Bilibili Watchlater Plus，对稍后再看功能进行了一番改造。开源地址：bilibili-watchlater-plus。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://blog.andiedie.cn/assets/image-20190125195221887.png">
+<meta property="og:image" content="http://blog.andiedie.cn/assets/image-20190125203812434.png">
+<meta property="og:image" content="http://blog.andiedie.cn/assets/image-20190125210925839.png">
+<meta property="og:image" content="http://blog.andiedie.cn/assets/image-20190125211007688.png">
+<meta property="og:image" content="http://blog.andiedie.cn/assets/image-20190125224055885.png">
+<meta property="og:updated_time" content="2019-05-10T13:08:07.542Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Bilibili Watchlater Plus : 让 B 站的稍后再看更好用">
+<meta name="twitter:description" content="B 站的稍后再看功能明显是一个半成品，有许多不完善的地方，其中最致命的就是无法加入和播放番剧。最近我终于忍受不了它的诸多问题，着手开发了一个油猴脚本 Bilibili Watchlater Plus，对稍后再看功能进行了一番改造。开源地址：bilibili-watchlater-plus。">
+<meta name="twitter:image" content="http://blog.andiedie.cn/assets/image-20190125195221887.png">
+
+
+
+  <link rel="alternate" href="/feed.xml" title="Andie's Blog" type="application/atom+xml">
+
+
+
+
+  <link rel="canonical" href="http://blog.andiedie.cn/posts/7a6d/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Bilibili Watchlater Plus : 让 B 站的稍后再看更好用 | Andie's Blog</title>
+  
+
+
+
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-126454098-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-126454098-1');
+  </script>
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Andie's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.andiedie.cn/posts/7a6d/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Andie">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar-smile.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Andie's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Bilibili Watchlater Plus : 让 B 站的稍后再看更好用
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-01-25 19:32:36" itemprop="dateCreated datePublished" datetime="2019-01-25T19:32:36+08:00">2019-01-25</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-05-10 21:08:07" itemprop="dateModified" datetime="2019-05-10T21:08:07+08:00">2019-05-10</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/posts/7a6d/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/posts/7a6d/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+            <span id="/posts/7a6d/" class="leancloud_visitors" data-flag-title="Bilibili Watchlater Plus : 让 B 站的稍后再看更好用">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>B 站的稍后再看功能明显是一个半成品，有许多不完善的地方，其中最致命的就是无法加入和播放番剧。最近我终于忍受不了它的诸多问题，着手开发了一个油猴脚本 Bilibili Watchlater Plus，对稍后再看功能进行了一番改造。开源地址：<a href="https://github.com/Andiedie/bilibili-watchlater-plus" target="_blank" rel="noopener">bilibili-watchlater-plus</a>。</p>
+<a id="more"></a>
+<h1 id="1-问题"><a href="#1-问题" class="headerlink" title="1. 问题"></a>1. 问题</h1><p>B 站的稍后再看功能主要有三点让我觉得不能忍受：</p>
+<ol>
+<li><p>无法将番剧加入稍后再看。</p>
+<p><img src="/assets/image-20190125195221887.png" alt="image-20190125195221887"></p>
+</li>
+<li><p>即使通过一些特别的方式将番剧加入了稍后再看，也无法播放。</p>
+<p><img src="/assets/image-20190125203812434.png" alt="image-20190125203812434"></p>
+</li>
+<li><p>稍后再看按钮没有初始状态。</p>
+<p>一句话总结理想状态就是，<strong>已加入的视频初始显示勾选，没加入的视频初始不勾选；点击未勾选的按钮，将视频加入稍后再看；点击已勾选的按钮，将视频移出稍后再看</strong>。</p>
+<p>然后 B 站目前无论一个视频有没有被加入稍后再看，它的按钮都是同一个初始状态，也就是说下面的第一张图。</p>
+<p>没加入稍后再看的视频的默认初始状态：</p>
+<p><img src="/assets/image-20190125210925839.png" alt="image-20190125210925839"></p>
+<p>已被加入稍后再看的视频的<strong>理想初始状态</strong>：</p>
+<p><img src="/assets/image-20190125211007688.png" alt="image-20190125211007688"></p>
+</li>
+</ol>
+<h1 id="2-初级阶段"><a href="#2-初级阶段" class="headerlink" title="2. 初级阶段"></a>2. 初级阶段</h1><p>在开发这个正式版本之前，我曾写过一个临时用用的版本，主要作用于首页右上角的动态悬浮窗，因为那是我用的最多的地方。</p>
+<p>这个版本可以从这里获取：<a href="https://github.com/Andiedie/bilibili-watchlater-plus/blob/801a7ce7e5f26ac4b136f06cc8767283ed3835f4/bilibili-watchlater-plus.user.js" target="_blank" rel="noopener">Bilibili Watchlater Plus 0.0.1</a>。</p>
+<p>当时解决了在动态悬浮窗上已经可以将番剧加入稍后再看，稍后再看按钮有初始状态。对于在稍后再看中的番剧视频，则是采用直接跳转到播放链接的方式解决。</p>
+<p>上述的临时版本让我在一段时间内有了比较舒适的使用体验，但是近段时间 B 站更改了一些 UI 和 API 接口，原来的脚本失效了。正巧假期时间比较充裕，我就借此机会开发了一个比较完整的版本。</p>
+<h1 id="3-实现"><a href="#3-实现" class="headerlink" title="3. 实现"></a>3. 实现</h1><h2 id="3-1-如何实现"><a href="#3-1-如何实现" class="headerlink" title="3.1. 如何实现"></a>3.1. 如何实现</h2><p>首先考虑各种需求该如何实现。</p>
+<ol>
+<li><p>让番剧也可以加入稍后再看。</p>
+<p>首先是可行性。B 站的稍后再看 API 需要 <code>aid</code> （即视频 ID）作为参数，而番剧的单集 ID 是 <code>epid</code>。只需要通过番剧播放页就可以获取 <code>epid</code> 对应的 <code>aid</code>，再调用 API 就可以将番剧加入稍后再看。</p>
+<p>然后是如何实现。目前常规视频在封面图右下角都会有一个稍后再看按钮，点击就可以添加或删除稍后再看，然后番剧的封面却没有。因此实现番剧加入稍后再看非常简单，只需要给番剧的封面也添加一个稍后再看按钮就可以了。</p>
+</li>
+<li><p>稍后再看按钮的初始状态。</p>
+<p>在之前提到的初级版本里，我解决这个问题的方法非常粗暴：首先通过 API 确定每个视频是否已经加入了稍后再看，对于已经加入稍后再看的视频，给它的按钮添加一个 <code>class</code> 改变样式。</p>
+<p>这样的好处是非常简单粗暴，几行就可以写完所有逻辑。但是坏处也显而易见，按钮仅仅是样式改变了，功能却没有，导致点击一个已勾选的按钮结果却又是将视频加入稍后再看，而不是勾选按钮应该做的”将视频移出稍后再看“。简单的来说就是按钮功能和样式的不统一。</p>
+<p><strong>要实现按钮功能和样式的统一</strong>，只能抛弃原有的按钮，自己从头开始为每个视频添加稍后再看按钮。这样按钮的样式、功能都可以自己控制，唯一的缺点就是需要一定的工作量。</p>
+</li>
+<li><p>可以在稍后再看播放番剧。</p>
+<p>这个是最让我头疼的地方就是如何在稍后再看中播放番剧。最后我发现 Hack B 站的视频播放器使之能播放番剧太麻烦了，不如我自己实现一个稍后再看的播放逻辑。</p>
+<p>原本的播放逻辑是 B 站在一个专为稍后再看编写的单页面应用中，逐个播放视频，当遇到番剧时就无法解析并弹窗。为了简化开发，我设定的新逻辑是，点击稍后再看的视频直接跳转到常规视频播放页面，并在页面左边添加一个汉堡菜单，可以看到并跳转到其他稍后再看。</p>
+</li>
+</ol>
+<h2 id="3-2-监听页面变化"><a href="#3-2-监听页面变化" class="headerlink" title="3.2. 监听页面变化"></a>3.2. 监听页面变化</h2><p>上面提到，我们需要替换、添加按钮，但这会遇到几个问题：</p>
+<ul>
+<li>由于油猴脚本可能在任何时候插入页面，此时页面的状态不确定</li>
+<li>页面可能在任何时候更新，比如加载中的页面或者用户点击导致页面变化</li>
+</ul>
+<hr>
+<p>最理想的实现是，监听页面的变化。这里提出一个需求，我需要寻找页面中所有的旧按钮，替换成新的自定义的按钮。利用 HTML 提供的 <a href="https://developer.mozilla.org/zh-CN/docs/Web/API/MutationObserver" target="_blank" rel="noopener">MutationObserver</a> API，我们可以订阅某个根节点下的所有变化，我们只需要在变化的节点下寻找有没有旧按钮就行了。</p>
+<hr>
+<p>但是现在出现了另一个需求：添加按钮。</p>
+<p>添加按钮的逻辑是，找到一个父元素，这个父元素原本应该有稍后再看按钮，而现在却没有，那么我们就向父元素里添加自定义的按钮。也就是说我们搜索的检查点有两个，父元素和是否有子元素，只有”找到父元素“和”按钮子元素不存在“同时满足时，才添加自定义按钮。</p>
+<p>让我们回想刚刚提到的方法，首先 MutationObserver 会提供一个有更改的节点，如果目标父元素和子元素都位于这个节点下，那么没有问题，我们可以很轻松的搜索到。但如果 MutationObserver 回调的节点位于父元素和子元素之间，搜索就会变得略微复杂，因为我们需要通知向两个方向搜索。</p>
+<hr>
+<p>最终妥协了上述两种情况，使用的解决方案是，使用 MutationObserver 监听这个 <code>document.body</code> 的变化。在每次变化发生之后，遍历整个文档寻找目标节点。</p>
+<p>这样的做法好处是，遍历的逻辑非常简单，直接使用 JQuery 就可以做到。坏处是更加耗时，因为每次整个文档的任意一处发生变化时，哪怕变化的地方与我们的目标毫无关系，都需要遍历整个文档树，而且通常整个 HTML 文档会在短时间内频繁地更新。为了解决性能问题，使用 Lodash 的 <code>debounce</code> 函数对回调去抖动，这样短时间内的频繁更新只会触发一次搜索。</p>
+<p>大致代码如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> MutationObserver((mutationList) = &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">const</span> mutation <span class="keyword">of</span> mutationList)&#123;</span><br><span class="line">        <span class="comment">// 只关心添加节点的变化</span></span><br><span class="line">        <span class="keyword">if</span> (mutation.addedNodes.length) &#123;</span><br><span class="line">            <span class="comment">// 200 毫秒内的频繁调用只会触发一次</span></span><br><span class="line">            _.debounce(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">                $(<span class="string">'...'</span>).each(<span class="function">(<span class="params">index, ele</span>) =&gt;</span> &#123;</span><br><span class="line">                    <span class="comment">// 找到的目标</span></span><br><span class="line">                &#125;);</span><br><span class="line">            &#125;, <span class="number">200</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;).observe(<span class="built_in">document</span>.body, &#123;</span><br><span class="line">    childList: <span class="literal">true</span>,</span><br><span class="line">    subtree: <span class="literal">true</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h2 id="3-3-异步更新状态"><a href="#3-3-异步更新状态" class="headerlink" title="3.3. 异步更新状态"></a>3.3. 异步更新状态</h2><p>在开发中还遇到一个小情景：现在所有的稍后再看按钮都成功替换成了自定义的按钮，然而因为稍后再看列表是异步获取的，没办法同步地给这些按钮设置是否勾选的状态。</p>
+<p>那么如何异步地给按钮们更新状态呢？</p>
+<p>一个最简单粗暴的思路就是：按钮默认都是不勾选的状态。此时去获取稍后再看列表，待数据返回后，再从页面中找回所有的按钮，依次给他们分配状态。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">const</span> oldButton <span class="keyword">of</span> oldButtons) &#123;</span><br><span class="line">    <span class="keyword">const</span> button = <span class="built_in">document</span>.createElement(<span class="string">'div'</span>);</span><br><span class="line">    button.aid = <span class="string">'...'</span>;</span><br><span class="line">    <span class="comment">// 默认不勾选</span></span><br><span class="line">    button.checked = <span class="literal">false</span>;</span><br><span class="line">    button.className = <span class="string">'watch-later-plus-button'</span>;</span><br><span class="line">    oldButton.replaceWith(button);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> watchlaterList = <span class="keyword">await</span> getWatchlaterList();</span><br><span class="line">$(<span class="string">'.watch-later-plus-button'</span>)</span><br><span class="line">    .filter(<span class="string">'...'</span>)	<span class="comment">// 根据 watchlaterList 过滤出需要勾选的按钮</span></span><br><span class="line">    .each(<span class="function">(<span class="params">_, ele</span>) =&gt;</span> ele.checked = <span class="literal">true</span>);</span><br></pre></td></tr></table></figure>
+<p>上面的想法可以通过保存按钮引用的方式减少一次遍历：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> newButtons = [];</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">const</span> oldButton <span class="keyword">of</span> oldButtons) &#123;</span><br><span class="line">    <span class="keyword">const</span> button = <span class="built_in">document</span>.createElement(<span class="string">'div'</span>);</span><br><span class="line">    button.aid = <span class="string">'...'</span>;</span><br><span class="line">    <span class="comment">// 默认不勾选</span></span><br><span class="line">    button.checked = <span class="literal">false</span>;</span><br><span class="line">    newButtons.push(buttons);</span><br><span class="line">    oldButton.replaceWith(button);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> watchlaterList = <span class="keyword">await</span> getWatchlaterList();</span><br><span class="line">buttons.filter(<span class="string">'...'</span>)	<span class="comment">// 根据 watchlaterList 过滤出需要勾选的按钮</span></span><br><span class="line">       .forEach(<span class="function">(<span class="params">ele</span>) =&gt;</span> ele.checked = <span class="literal">true</span>);</span><br></pre></td></tr></table></figure>
+<p>上面两个方法本质是一样的，在创建按钮之后单独维护了一系列用于更新状态的语句。</p>
+<p>我们可以利用闭包以及 Promise 的特性，写出这样的方法：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> watchLaterList = <span class="function">(<span class="params">(</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> promise;</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (!promise) &#123;</span><br><span class="line">            promise = getWatchLaterList();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> promise;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;)();</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">const</span> oldButton <span class="keyword">of</span> oldButtons) &#123;</span><br><span class="line">    <span class="keyword">const</span> button = <span class="built_in">document</span>.createElement(<span class="string">'div'</span>);</span><br><span class="line">    button.aid = <span class="string">'...'</span>;</span><br><span class="line">    watchLaterList().then(<span class="function"><span class="params">list</span> =&gt;</span> &#123;</span><br><span class="line">        button.checked = list.includes(button.aid);</span><br><span class="line">    &#125;);</span><br><span class="line">    buttons.push(buttons);</span><br><span class="line">    oldButton.replaceWith(button);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样更新状态的逻辑就不需要单独维护了。</p>
+<h1 id="4-现状和吐槽"><a href="#4-现状和吐槽" class="headerlink" title="4. 现状和吐槽"></a>4. 现状和吐槽</h1><p>使用脚本之后，上面提到的 B站稍后再看的问题都得到了解决，特别是番剧也支持稍后再看之后，使用体验非常棒。</p>
+<p><img src="/assets/image-20190125224055885.png" alt="image-20190125224055885"></p>
+<p>不要嫌弃我的 UI，又不是不能用。之后 B 站再改 UI 或 API 的时候再更新吧。</p>
+<p>吐槽一下 B 站的前端，写个新版本的 UI 还只有播放界面才有，还是常规视频的播放界面有新 UI 而番剧的播放界面没有；其他地方都是普通的多页应用，但是到了稍后再看和个人空间确实单页面应用；就一个稍后再看的按钮的逻辑，在首页、动态悬浮窗、动态首页、空间页面的实现居然都是不一样的。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+      <div>
+        
+
+
+
+  
+
+
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Andie</li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    
+    <a href="http://blog.andiedie.cn/posts/7a6d/" title="Bilibili Watchlater Plus : 让 B 站的稍后再看更好用">http://blog.andiedie.cn/posts/7a6d/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/posts/5d4d/" rel="next" title="常用的 Badge">
+                <i class="fa fa-chevron-left"></i> 常用的 Badge
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/posts/cc60/" rel="prev" title="移动设备抓包">
+                移动设备抓包 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar-smile.png" alt="Andie">
+            
+              <p class="site-author-name" itemprop="name">Andie</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">16</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">5</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/feed.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/Andiedie" title="GitHub &rarr; https://github.com/Andiedie" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:zchangan@163.com" title="E-Mail &rarr; mailto:zchangan@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            </div>
+          
+
+          
+             <div class="cc-license motion-element" itemprop="license">
+              
+                
+              
+              
+              
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+             </div>
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-问题"><span class="nav-text">1. 问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-初级阶段"><span class="nav-text">2. 初级阶段</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-实现"><span class="nav-text">3. 实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-如何实现"><span class="nav-text">3.1. 如何实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-监听页面变化"><span class="nav-text">3.2. 监听页面变化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-3-异步更新状态"><span class="nav-text">3.3. 异步更新状态</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-现状和吐槽"><span class="nav-text">4. 现状和吐槽</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Andie</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.7.0"></script>
+
+  <script src="/js/src/motion.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/affix.js?v=6.7.0"></script>
+
+  <script src="/js/src/schemes/pisces.js?v=6.7.0"></script>
+
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=6.7.0"></script>
+<script src="/js/src/post-details.js?v=6.7.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+
+
+  
+
+<script src="//cdn1.lncld.net/static/js/3.11.1/av-min.js"></script>
+
+
+
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+
+<script>
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(function (item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: true,
+    appId: 'VVPQKgngmGHeLTvsuOfEB25g-gzGzoHsz',
+    appKey: 'ayIKVGYRUpGNN6IJHzR7H2kS',
+    placeholder: 'Comment here',
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: true
+  });
+</script>
+
+
+
+  
+
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+      }
+      else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+  
+
+  
+  
+
+  
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  <style>
+    .copy-btn {
+      display: inline-block;
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 20px;
+      color: #333;
+      white-space: nowrap;
+      vertical-align: middle;
+      cursor: pointer;
+      background-color: #eee;
+      background-image: linear-gradient(#fcfcfc, #eee);
+      border: 1px solid #d5d5d5;
+      border-radius: 3px;
+      user-select: none;
+      outline: 0;
+    }
+
+    .highlight-wrap .copy-btn {
+      transition: opacity .3s ease-in-out;
+      opacity: 0;
+      padding: 2px 6px;
+      position: absolute;
+      right: 4px;
+      top: 8px;
+    }
+
+    .highlight-wrap:hover .copy-btn,
+    .highlight-wrap .copy-btn:focus {
+      opacity: 1
+    }
+
+    .highlight-wrap {
+      position: relative;
+    }
+  </style>
+  <script>
+    $('.highlight').each(function (i, e) {
+      var $wrap = $('<div>').addClass('highlight-wrap');
+      $(e).after($wrap);
+      $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function (e) {
+        var code = $(this).parent().find('.code').find('.line').map(function (i, e) {
+          return $(e).text();
+        }).toArray().join('\n');
+        var ta = document.createElement('textarea');
+        var range = document.createRange(); //For Chrome
+        var sel = window.getSelection(); //For Chrome
+        var yPosition = window.pageYOffset || document.documentElement.scrollTop;
+        ta.style.top = yPosition + 'px'; //Prevent page scroll
+        ta.style.position = 'absolute';
+        ta.style.opacity = '0';
+        ta.value = code;
+        ta.textContent = code; //For FireFox
+        ta.contentEditable = true;
+        ta.readOnly = false;
+        document.body.appendChild(ta);
+        range.selectNode(ta);
+        sel.removeAllRanges();
+        sel.addRange(range);
+        ta.setSelectionRange(0, code.length);
+        var result = document.execCommand('copy');
+        
+          if (result) $(this).text('复制成功');
+          else $(this).text('复制失败');
+        
+        ta.blur(); //For iOS
+        $(this).blur();
+      })).on('mouseleave', function (e) {
+        var $b = $(this).find('.copy-btn');
+        setTimeout(function () {
+          $b.text('复制');
+        }, 300);
+      }).append(e);
+    })
+  </script>
+
+
+  
+
+</body>
+</html>

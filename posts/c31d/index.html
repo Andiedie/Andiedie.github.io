@@ -1,0 +1,1566 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html class="theme-next gemini" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+  <meta name="google-site-verification" content="aKFe-l6Y-FYv_TGfjx70Zpmqy38r4zTmQEf8Gal6Gcs">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link rel="stylesheet" href="//fonts.lug.ustc.edu.cn/css?family=Lato:300,300italic,400,400italic,700,700italic|Rationale:300,300italic,400,400italic,700,700italic|Source Code Pro:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext">
+  
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=6.7.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-smile.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-smile.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-smile.png?v=6.7.0">
+
+
+  <link rel="mask-icon" href="/images/smile.svg?v=6.7.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.7.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="最近主要通过阅读论文的方式，学习了卷积神经网络的基本概念、结构、方法。这篇周报主要是对所学知识的一些总结。 如果有错误，烦请在评论区指正。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="实训报告 1st">
+<meta property="og:url" content="http://blog.andiedie.cn/posts/c31d/index.html">
+<meta property="og:site_name" content="Andie&#39;s Blog">
+<meta property="og:description" content="最近主要通过阅读论文的方式，学习了卷积神经网络的基本概念、结构、方法。这篇周报主要是对所学知识的一些总结。 如果有错误，烦请在评论区指正。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://blog.andiedie.cn/assets/46342155.jpg">
+<meta property="og:image" content="http://blog.andiedie.cn/assets/9170400.jpg">
+<meta property="og:image" content="http://blog.andiedie.cn/assets/28640822.jpg">
+<meta property="og:image" content="http://blog.andiedie.cn/assets/30522079.jpg">
+<meta property="og:image" content="http://blog.andiedie.cn/assets/84598650.jpg">
+<meta property="og:image" content="http://blog.andiedie.cn/assets/2018-3-29201953.gif">
+<meta property="og:image" content="http://blog.andiedie.cn/assets/numerical_padding_strides.gif">
+<meta property="og:image" content="http://blog.andiedie.cn/assets/ezgif-3-42672af34c.gif">
+<meta property="og:image" content="http://blog.andiedie.cn/assets/ezgif-3-3d5bb5e0dd.gif">
+<meta property="og:image" content="http://blog.andiedie.cn/assets/800px-Pooling_schematic.gif">
+<meta property="og:image" content="http://blog.andiedie.cn/assets/37940075.jpg">
+<meta property="og:image" content="http://blog.andiedie.cn/assets/31364805.jpg">
+<meta property="og:updated_time" content="2019-05-10T13:08:07.546Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="实训报告 1st">
+<meta name="twitter:description" content="最近主要通过阅读论文的方式，学习了卷积神经网络的基本概念、结构、方法。这篇周报主要是对所学知识的一些总结。 如果有错误，烦请在评论区指正。">
+<meta name="twitter:image" content="http://blog.andiedie.cn/assets/46342155.jpg">
+
+
+
+  <link rel="alternate" href="/feed.xml" title="Andie's Blog" type="application/atom+xml">
+
+
+
+
+  <link rel="canonical" href="http://blog.andiedie.cn/posts/c31d/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>实训报告 1st | Andie's Blog</title>
+  
+
+
+
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-126454098-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-126454098-1');
+  </script>
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Andie's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.andiedie.cn/posts/c31d/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Andie">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar-smile.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Andie's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">实训报告 1st
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-03-29 08:47:53" itemprop="dateCreated datePublished" datetime="2018-03-29T08:47:53+08:00">2018-03-29</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-05-10 21:08:07" itemprop="dateModified" datetime="2019-05-10T21:08:07+08:00">2019-05-10</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Homework/" itemprop="url" rel="index"><span itemprop="name">Homework</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/posts/c31d/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/posts/c31d/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+            <span id="/posts/c31d/" class="leancloud_visitors" data-flag-title="实训报告 1st">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近主要通过阅读论文的方式，学习了卷积神经网络的基本概念、结构、方法。这篇周报主要是对所学知识的一些总结。</p>
+<p>如果有错误，烦请在评论区指正。</p>
+<a id="more"></a>
+<h1 id="1-神经网络"><a href="#1-神经网络" class="headerlink" title="1. 神经网络"></a>1. 神经网络</h1><h2 id="1-1-神经元-Neuron"><a href="#1-1-神经元-Neuron" class="headerlink" title="1.1. 神经元 Neuron"></a>1.1. 神经元 Neuron</h2><p>神经网络由神经元组成，单个神经元的结构如下</p>
+<p><img src="/assets/46342155.jpg" alt=""></p>
+<p>实际上是，输入向量$x$经过权值$W$进行线性变换之后得到$W^Tx+b$，再进过激活函数$f$将线性结果转变为非线性的结果$f(W^Tx+b)$，即 $H_{W,b}=f(W^Tx+b)$，其中$W^T$是$W$的转置。</p>
+<h3 id="1-1-1-神经元与神经细胞"><a href="#1-1-1-神经元与神经细胞" class="headerlink" title="1.1.1. 神经元与神经细胞"></a>1.1.1. 神经元与神经细胞</h3><p>为了方便，我将用<strong>神经元</strong>来表示本文中神经网络的基本单位，而用<strong>神经细胞</strong>表示生物学中的概念。</p>
+<p>让我们来将这个神经元与神经细胞做对比。</p>
+<p><img src="/assets/9170400.jpg" alt=""></p>
+<p>神经细胞有<strong>树突</strong>、<strong>细胞体</strong>和<strong>轴突</strong>。单个神经细胞可以看做一个二元分类器————兴奋时输出<code>1</code>，抑制时输出<code>0</code>。当信号量超过某个阈值时，神经元可以将兴奋沿着轴突传递给神经元。</p>
+<p>而这里的神经元则是为了模拟神经细胞，权值向量$W$对应树突，偏置$b$对应阈值，激活函数$f$对应细胞体。神经元通过权值向量$W$接收来自上一次的输入向量$x$，并将输入$W^Tx+b$交给激活函数$f$。激活函数将决定传递给下一层神经元的输出。</p>
+<h3 id="1-1-2-激活函数-Activation-Function"><a href="#1-1-2-激活函数-Activation-Function" class="headerlink" title="1.1.2. 激活函数 Activation Function"></a>1.1.2. 激活函数 Activation Function</h3><p>激活函数定义了神经元在线性变换$W^Tx+b$之后的非线性输出结果。</p>
+<h4 id="为什么使用激活函数"><a href="#为什么使用激活函数" class="headerlink" title="为什么使用激活函数"></a>为什么使用激活函数</h4><p>如果不使用激活函数，由于所有的操作都是线性的，所以整个神经网络只是一个线性回归模型。线性回归模型的表达能力有限，它在很多问题上都表现得不够好，甚至无法解决这些问题。因此我们通过引入激活函数，为神经网络引入非线性的因素，增强它的能力，使其可以学习更加复杂的数据，表达输入输出之间非线性的复杂映射关系。</p>
+<h4 id="常用的激活函数有"><a href="#常用的激活函数有" class="headerlink" title="常用的激活函数有"></a>常用的激活函数有</h4><ul>
+<li>Sigmoid：$S(t)=\frac{1}{1+e^{-t}}$</li>
+<li>Tanh: $tanh(x)=\frac{sinh(x)}{cosh(x)}=\frac{e^x-e^{-x}}{e^x+e^{-x}}$</li>
+<li>ReLU：$f(x)=max(0,x)$</li>
+</ul>
+<p>由于梯度消失问题(Vanishing Gradient Problem)，前两者已经弃用，ReLU是主流的激活函数。</p>
+<h3 id="1-1-3-全连接-Fully-Connected"><a href="#1-1-3-全连接-Fully-Connected" class="headerlink" title="1.1.3. 全连接 Fully-Connected"></a>1.1.3. 全连接 Fully-Connected</h3><p>这里我们展示的神经元，将来自输入向量$x$中的所有数据都用于计算，我们还称这个神经元是<strong>全连接的(fully-connected)</strong>。</p>
+<p>继续我们神经元与神经细胞的比较联想，假如这个神经元是输入向量之后的第一层神经元，那么你可以想象成，我们脑中有一个树突极其巨大的神经细胞，它将来自外界的刺激全部收入囊中，并根据刺激给出输出。</p>
+<p>全连通的好处显而易见，每个神经元都可以获取最全面的输入；但它的缺点也显而易见————我们定义处理大量的权值参数。这个缺点的具体描述，以及全连通缺点的方法，都会在接下来的内容中提到。</p>
+<h2 id="1-2-多层神经网络"><a href="#1-2-多层神经网络" class="headerlink" title="1.2. 多层神经网络"></a>1.2. 多层神经网络</h2><p>当多个神经元组合起来，形成分层结构时，就形成了神经网络。</p>
+<p><img src="/assets/28640822.jpg" alt=""></p>
+<p>其中</p>
+<p>$a_1^{(2)}=f(W^{(1)}_{11}x_1+W^{(1)}_{12}x_2+W^{(1)}_{13}x_3+b^{(1)}_1)$</p>
+<p>$a_2^{(2)}=f(W^{(1)}_{21}x_1+W^{(1)}_{22}x_2+W^{(1)}_{23}x_3+b^{(1)}_2)$</p>
+<p>$a_3^{(2)}=f(W^{(1)}_{31}x_1+W^{(1)}_{32}x_2+W^{(1)}_{33}x_3+b^{(1)}_3)$</p>
+<p>$H_{W,b}=f(W^{(2)}_{12}a_1^{(2)}+W^{(2)}_{22}a_2^{(2)}+W^{(2)}_{32}a_3^{(2)}+b^{(2)}_1)$</p>
+<p>这里的$W_{\beta\gamma}^{(\alpha)}$表示从第$\alpha$层到第$\beta$层的第$\gamma$个神经元的权值向量$W$（为了简化，这里省略了转置符号$^T$），$b^{(\alpha)}_\beta$表示从第$\alpha$层到第$\beta$层的偏置$b$。</p>
+<p>这是一个典型的三层神经网络，我们将Layer 2称为隐藏层(Hidden Layer)。一个神经网络中可以拥有多个隐藏层。</p>
+<h3 id="1-2-1-前馈神经网络-Feedforward-neural-network"><a href="#1-2-1-前馈神经网络-Feedforward-neural-network" class="headerlink" title="1.2.1. 前馈神经网络 Feedforward neural network"></a>1.2.1. 前馈神经网络 Feedforward neural network</h3><p>像这样，在神经网络内部，输入从输入层向输出层单向传播，不构成任何有向环的结构，我们称之为前馈神经网络。</p>
+<h3 id="1-2-2-反向传播-Backpropagation"><a href="#1-2-2-反向传播-Backpropagation" class="headerlink" title="1.2.2. 反向传播 Backpropagation"></a>1.2.2. 反向传播 Backpropagation</h3><p>下一个要解决的问题是，怎样合理地确定神经网络中各层的权值。这句需要用到反向传播算法。</p>
+<p>反向传播算法是训练神经网络的常用方法，该方法利用<a href="https://zh.wikipedia.org/wiki/%E9%93%BE%E5%BC%8F%E6%B3%95%E5%88%99" target="_blank" rel="noopener">链式法则</a>对网络中的所有权值计算<strong>损失函数</strong>的梯度，用来<strong>更新权值</strong>以最小化损失函数，本质上是一种<a href="https://zh.wikipedia.org/wiki/%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D%E6%B3%95" target="_blank" rel="noopener">梯度下降法</a>。</p>
+<p><img src="/assets/30522079.jpg" alt=""></p>
+<p>反向传播算法有两个阶段：激励传播和权值更新</p>
+<h4 id="激励传播"><a href="#激励传播" class="headerlink" title="激励传播"></a>激励传播</h4><ol>
+<li>前向传播：输入进入神经网络并前向传播，最后产生输出。</li>
+<li>反向传播：通过损失函数求出输出与标准输出之间的误差，然后通过链式法则求出每一层的权值参数对整体误差的影响（即总误差对权值参数求偏导）。</li>
+</ol>
+<h4 id="权值更新"><a href="#权值更新" class="headerlink" title="权值更新"></a>权值更新</h4><ol>
+<li>将输入带入前面的求到结果中，获得权值梯度。</li>
+<li>将权值乘上<strong>一个负的学习率</strong>，加到现有的权值上，以更新它的值。</li>
+</ol>
+<p>具体实例在<a href="https://www.cnblogs.com/charlotte77/p/5629865.html" target="_blank" rel="noopener">这篇博客</a>中有非常详细的过程。</p>
+<h3 id="1-2-3-问题"><a href="#1-2-3-问题" class="headerlink" title="1.2.3. 问题"></a>1.2.3. 问题</h3><p>在前面我们就曾提到过，在我们现在介绍的神经网络中有一个由于全连接导致的巨大问题————参数数量巨大。</p>
+<p>想象一下，假如输入是1000X1000的灰度图片（一个channel），也就是一个$10^6$个值，第二层隐藏层有$10^6$个神经元，那我们将面临$10^{12}$次方个权值。这样的参数数量是不可接受的。因此我们需要想一个办法去解决这个问题。</p>
+<h1 id="2-卷积神经网络"><a href="#2-卷积神经网络" class="headerlink" title="2. 卷积神经网络"></a>2. 卷积神经网络</h1><h2 id="2-1-局部连接-Locally-Connected"><a href="#2-1-局部连接-Locally-Connected" class="headerlink" title="2.1. 局部连接 Locally Connected"></a>2.1. 局部连接 Locally Connected</h2><p>人对外界的认知是从局部到总体的，我们总是先对图像中的细节————例如边缘、颜色等有了认识，逐渐辨别轮廓，最后识别出物体。另外一个直觉的想法是，图像中的像素点总是和邻近的点关系密切，和距离较远的点关系较小甚至没有关系。</p>
+<p>也就是说，一个单一的神经元没有必要对整个输入图像进行感知（全连接）。神经元只需要对局部进行感知（局部连接），再由更高层的神经元进行综合即可。</p>
+<p><img src="/assets/84598650.jpg" alt=""></p>
+<p>如上图，第二层隐藏层中的神经元只将部分值当做输入，最后由第三层隐藏层进行全连接。</p>
+<p>回到之前的假设，假如输入依旧是1000X1000的灰度图片，第二层隐藏层依旧有$10^6$个神经元。但此时利用局部连接，第二层的神经元每个值对应输入中10X10的图像范围，那么每个神经元只需要100个权值。此时权值总数就是$10^8$个，远小于$10^{12}$个。</p>
+<h2 id="2-2-参数共享-Shared-Weights"><a href="#2-2-参数共享-Shared-Weights" class="headerlink" title="2.2. 参数共享 Shared Weights"></a>2.2. 参数共享 Shared Weights</h2><p>$10^8$个权值参数虽然对比$10^{12}$已经是相当大的进步，但我们仍然可以进一步缩小它，解决的方案就是参数共享。</p>
+<p>第二层的$10^6$个神经元均采用不同的参数，设想一下，加入它们都采用一样的100个权值参数，那么参数的总数就只剩下了100。</p>
+<p>我们可以这样理解权值共享，这100个参数其实是通过卷积提取图片的特征的方式。在没有权值共享之前，每个神经元提取特征的方式都是不同的（因为它们的权值参数不同）。而现在所有神经元共享这100个参数，那所有的神经元就会以相同的方式提取图片特征。又因为上述局部连接的存在，每个神经元提取特征的位置是不一样的。最终导致的结果是，每个神经元在各自的局部，用相同的方式提取特征。</p>
+<p>这100个参数实际上是10X10的矩阵，我们将这个矩阵成为<strong>卷积核(Kernel)</strong>，卷积(Convolution)的过程就是这个卷积核在图片上游走，将覆盖范围内的所有输入值与卷积核对应位置的权值相乘累加。重复这个过程直到提取出<strong>特征图(Feature Map)</strong>，如下图所示。</p>
+<p><img src="/assets/2018-3-29201953.gif" alt=""></p>
+<h3 id="2-2-1-对灰度图像卷积"><a href="#2-2-1-对灰度图像卷积" class="headerlink" title="2.2.1. 对灰度图像卷积"></a>2.2.1. 对灰度图像卷积</h3><p>对于一个图像，每个像素点由RGB三个值描述，也就是说一个图像是一个三维矩阵。我们将这三个维度分别称为长、宽和通道。</p>
+<p>对于一个卷积核，也有三个维度，分别为长、宽和深度。</p>
+<p>一次卷积操作有多个参数需要考虑：</p>
+<ul>
+<li>Size：每个卷积核的大小 Width*Height*Depth。</li>
+<li>Stride：卷积核每次移动的步长。</li>
+<li>Padding：卷积核在遇到边缘时补0的宽度。</li>
+</ul>
+<p>现在我们考虑比较简单的情况，灰度图像的特点是，只有一个通道，那么按照上述要求，卷积核的深度只需要为1就行了。</p>
+<p>下图展示了一个Size为3X3X1的卷积核在Stride为2、Padding为1情况下，对一个5X5X1灰度图像的卷积操作：</p>
+<p><img src="/assets/numerical_padding_strides.gif" alt=""></p>
+<h3 id="2-2-2-对多通道图像卷积"><a href="#2-2-2-对多通道图像卷积" class="headerlink" title="2.2.2. 对多通道图像卷积"></a>2.2.2. 对多通道图像卷积</h3><p>对于多个通道的图像，则要求卷积核的深度必须与输入图像的通道数一致。对于RGB三通道图像，则要求卷积核的深度必须为3。</p>
+<p>下图展示了一个Size为3X3X3的卷积核在Stride为2、Padding为0的情况下，对一个9X9X3的RGB图像的卷积操作：</p>
+<p><img src="/assets/ezgif-3-42672af34c.gif" alt=""></p>
+<h3 id="2-2-3-计算特征图的大小"><a href="#2-2-3-计算特征图的大小" class="headerlink" title="2.2.3. 计算特征图的大小"></a>2.2.3. 计算特征图的大小</h3><p>由于卷积核的深度总是与输入图像的通道数一致，所以输出的特征图总是一个二维矩阵，我们可以通过下面的公式计算出特征图的大小：</p>
+<p>$$W_{new}=\frac{W_{old}+Padding*2-W_{kernel}}{stride}+1$$</p>
+<p>这里W代表Width，同理可以计算出Height。</p>
+<h2 id="2-3-多核卷积"><a href="#2-3-多核卷积" class="headerlink" title="2.3. 多核卷积"></a>2.3. 多核卷积</h2><p>我们知道，一次卷积操作生成的特征图，是利用一个卷积核提取出来的一种特征。为了能够增加特征的数量，我们可以使用多个卷积核Size、Stride、Padding完全相同，但参数不同的卷积核对输入图像进行卷积。</p>
+<p>下图展示了我们使用两个卷积核的卷机操作：</p>
+<p><img src="/assets/ezgif-3-3d5bb5e0dd.gif" alt=""></p>
+<p>可以发现，输出的特征图的通道数，与输入图像的通道数无关，而是与卷积核的数量有关。使用的卷积核的数量越多，我们提取的特征数量就越多，特征图的通道数也越多。</p>
+<h2 id="2-4-多层卷积"><a href="#2-4-多层卷积" class="headerlink" title="2.4. 多层卷积"></a>2.4. 多层卷积</h2><p>图像是以像素点为单位作为输入的，隐藏层对输入卷积，提取出局部特征（比如边缘）。接下来的下一个隐藏层又以之前隐藏层的输出作为输入进行卷积，提取出抽象等级更高的特征（比如轮廓）。最后不断地增加隐藏层的数量，不断提取抽象等级更高的特征。最后进行全连接，使得学习的特征具有全局化的特性。</p>
+<h2 id="2-5-过拟合-Overfitting"><a href="#2-5-过拟合-Overfitting" class="headerlink" title="2.5. 过拟合 Overfitting"></a>2.5. 过拟合 Overfitting</h2><p>一般一个机器学习算法在训练集上训练，最后训练出来的模型被期望在用于预测时也拥有良好的表现，我们称之为泛化性。</p>
+<p>然而如果一个模型开始学习训练集数据中的特化性质或者随即特征，在预测时对于未知数据的表现就会变差，我们称之为过拟合。</p>
+<p>举一个简单的例子是，如果一个神经网络被训练用于分辨出所有的轿车。泛化性良好的情况下，模型只学习了轿车的通用特征，比如拥有四个轮子、车大灯、后备箱等。但如果我们的训练集中所有的轿车都是白色的，模型过度学习认为只有白色的才是轿车，这就是过拟合现象。</p>
+<h3 id="2-5-1-池化-Polling"><a href="#2-5-1-池化-Polling" class="headerlink" title="2.5.1. 池化 Polling"></a>2.5.1. 池化 Polling</h3><p>通过卷积获得特征之后，我们希望使用这些特征去分类。理论上，我们可以使用提取到的所有特征去分类，但这样会面临极其大的数据量。</p>
+<p>例如对于一个96X96X1的输入图像，我们使用一400个8X8的卷积核进行卷积（Stride为1、Padding为0），那么我们最终会得到一个89X89X400的特征图。这个特征图中拥有超过三百万个数据，如此庞大的数据量难以学习，且容易出现过拟合的现象。我们可以选择池化来解决这个问题。</p>
+<p>所谓池化，就是尝试使用一个更小的特征图去描述一个巨大的特征图。就像我们人类观察一个巨大的图片时，我们并不会注意图片中的每个细节，而是在每个区域选出有代表性特征，然后组合这些特征形成一个更小更利于理解的特征图。使用池化可以大大降低特征图的大小，并且减少过拟合现象。</p>
+<p><img src="/assets/800px-Pooling_schematic.gif" alt=""></p>
+<p>上图描述了一个典型的池化操作，将这个特征图分为四个部分，每个部分取出一个代表性特征，并最终形成一个4X4的池化特征图。</p>
+<p>和卷积一样，池化也有几个需要考虑参数：</p>
+<ul>
+<li>Size：每次池化的范围</li>
+<li>Stride：池化范围在特征图移动的距离</li>
+</ul>
+<p>上图就是一个典型的<code>Size=Stride</code>的池化。</p>
+<h4 id="池化方法"><a href="#池化方法" class="headerlink" title="池化方法"></a>池化方法</h4><ul>
+<li>平均池化：Size=Stride，取池化范围中所有的值的均值作为特征</li>
+<li>最大池化：Size=Stride，取池化范围中的最大值作为特征</li>
+<li>重叠池化：Stride&lt;Size，此时池化范围会有重叠，包含重叠平均池化和重叠最大池化。</li>
+</ul>
+<h3 id="2-5-2-失活-Dropout"><a href="#2-5-2-失活-Dropout" class="headerlink" title="2.5.2. 失活 Dropout"></a>2.5.2. 失活 Dropout</h3><p>一个降低预测误差的方法是，我们训练多个不同的模型，并且将这些模型的预测结果结合起来。这是一个很好的想法，但是代价也相当的大。训练一个模型已经需要相当长的时间，训练多个模型的成本将成倍增加，但是收益却并没有那么显著。因此一个折中的方案被提出————失活。</p>
+<p>失活这个机制在神经网络中作用的方式是，对于每次输入，隐藏层中的每个神经元的输出都有一定的概率（例如0.5）被设为0，这些失活的神经元不再参与前向传播和反向传播。因此，每次输入，神经网络都会以一种不同的结构，这强迫神经元学习更加鲁棒的特征，减少相互之间的依赖，以适应随机的失活机制。</p>
+<p>在实践中，失活机制大大减少了过拟合的现象，代价则是使得收敛的时间翻了一倍。</p>
+<h2 id="2-6-局部响应归一化-Local-Response-Normalization"><a href="#2-6-局部响应归一化-Local-Response-Normalization" class="headerlink" title="2.6. 局部响应归一化 Local Response Normalization"></a>2.6. 局部响应归一化 Local Response Normalization</h2><p>局部响应归一化原理是仿造生物学上活跃的神经细胞对相邻神经细胞的抑制现象（侧抑制）。它将神经网络中响应较强的特征到增强，而响应较弱的特征被抑制，从而加快收敛速度。</p>
+<p>其公式如下：</p>
+<p>$$b_{x,y}^i=a_{x,y}^i/\left(k+\alpha\sum_{j=max(0,i-n/2)}^{min(N-1,i+n/2)}(a_{x,y}^j)^2\right)^\beta$$</p>
+<p>其中$a_{x,y}^i$表示在i通道中的，x、y位置上的点的值，k、$\alpha$、$\beta$、n都是自定义的值。</p>
+<p><img src="/assets/37940075.jpg" alt=""></p>
+<p>从上图我们可以得知，实际上是以$a_{x,y}^i$为中心，沿着通道的轴的方向取n个值累加值作为分母，若该点的值越大，则被加强的越多；若越小，则被抑制的越多。</p>
+<h2 id="2-7-SoftMax"><a href="#2-7-SoftMax" class="headerlink" title="2.7. SoftMax"></a>2.7. SoftMax</h2><p>它能将一个含任意实数的K维的向量$z$的“压缩”到另一个K维实向量$\sigma(z)中，使得每一个元素的范围都在(0,1)之间，并且所有元素的和为1。该函数的形式通常按下面的式子给出：</p>
+<p>$$\sigma(z)_j=\frac{e^{z_j}}{\sum_{k=1}^Ke^{z_k}}$$</p>
+<p>假设神经网络最后的全连接输出的向量为1000维，那么将这1000维的向量输入SoftMax函数中，将会输出1000维的概率向量。这个向量中的每一个值描述了这个输入属于1000个分类中每个分类的概率。</p>
+<p><img src="/assets/31364805.jpg" alt=""></p>
+<h1 id="3-参考"><a href="#3-参考" class="headerlink" title="3. 参考"></a>3. 参考</h1><p>图片来自<a href="https://images.google.com" target="_blank" rel="noopener">Google Image</a></p>
+<p><a href="http://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks" target="_blank" rel="noopener">Krizhevsky A, Sutskever I, Hinton G E. ImageNet Classification with Deep Convolutional Neural Networks</a></p>
+<p><a href="https://zh.wikipedia.org/wiki/%E5%89%8D%E9%A6%88%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C" target="_blank" rel="noopener">维基百科. 前馈神经网络</a></p>
+<p><a href="https://zh.wikipedia.org/wiki/%E6%84%9F%E7%9F%A5%E5%99%A8" target="_blank" rel="noopener">维基百科. 感知器</a></p>
+<p><a href="http://deeplearning.stanford.edu/wiki/index.php/UFLDL%E6%95%99%E7%A8%8B" target="_blank" rel="noopener">UFLDL教程</a></p>
+<p><a href="https://zh.wikipedia.org/wiki/%E9%93%BE%E5%BC%8F%E6%B3%95%E5%88%99" target="_blank" rel="noopener">维基百科. 链式法则</a></p>
+<p><a href="https://zh.wikipedia.org/wiki/%E5%8F%8D%E5%90%91%E4%BC%A0%E6%92%AD%E7%AE%97%E6%B3%95" target="_blank" rel="noopener">维基百科. 反向传播算法</a></p>
+<p><a href="https://www.cnblogs.com/charlotte77/p/5629865.html" target="_blank" rel="noopener">Charlotte77. 一文弄懂神经网络中的反向传播法——BackPropagation</a></p>
+<p><a href="https://zh.wikipedia.org/wiki/%E7%BA%BF%E6%80%A7%E6%95%B4%E6%B5%81%E5%87%BD%E6%95%B0" target="_blank" rel="noopener">维基百科. 线性整流函数</a></p>
+<p><a href="https://zh.wikipedia.org/wiki/%E9%81%8E%E9%81%A9" target="_blank" rel="noopener">维基百科. 过拟合</a></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+      <div>
+        
+
+
+
+  
+
+
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Andie</li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    
+    <a href="http://blog.andiedie.cn/posts/c31d/" title="实训报告 1st">http://blog.andiedie.cn/posts/c31d/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/posts/159d/" rel="next" title="树莓派系统安装与配置">
+                <i class="fa fa-chevron-left"></i> 树莓派系统安装与配置
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/posts/53ad/" rel="prev" title="使用Travis进行持续集成">
+                使用Travis进行持续集成 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar-smile.png" alt="Andie">
+            
+              <p class="site-author-name" itemprop="name">Andie</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">16</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">5</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/feed.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/Andiedie" title="GitHub &rarr; https://github.com/Andiedie" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:zchangan@163.com" title="E-Mail &rarr; mailto:zchangan@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            </div>
+          
+
+          
+             <div class="cc-license motion-element" itemprop="license">
+              
+                
+              
+              
+              
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+             </div>
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-神经网络"><span class="nav-text">1. 神经网络</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-神经元-Neuron"><span class="nav-text">1.1. 神经元 Neuron</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-1-神经元与神经细胞"><span class="nav-text">1.1.1. 神经元与神经细胞</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-2-激活函数-Activation-Function"><span class="nav-text">1.1.2. 激活函数 Activation Function</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#为什么使用激活函数"><span class="nav-text">为什么使用激活函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#常用的激活函数有"><span class="nav-text">常用的激活函数有</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-3-全连接-Fully-Connected"><span class="nav-text">1.1.3. 全连接 Fully-Connected</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-多层神经网络"><span class="nav-text">1.2. 多层神经网络</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-1-前馈神经网络-Feedforward-neural-network"><span class="nav-text">1.2.1. 前馈神经网络 Feedforward neural network</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-2-反向传播-Backpropagation"><span class="nav-text">1.2.2. 反向传播 Backpropagation</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#激励传播"><span class="nav-text">激励传播</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#权值更新"><span class="nav-text">权值更新</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-3-问题"><span class="nav-text">1.2.3. 问题</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-卷积神经网络"><span class="nav-text">2. 卷积神经网络</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-局部连接-Locally-Connected"><span class="nav-text">2.1. 局部连接 Locally Connected</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-参数共享-Shared-Weights"><span class="nav-text">2.2. 参数共享 Shared Weights</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-1-对灰度图像卷积"><span class="nav-text">2.2.1. 对灰度图像卷积</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-2-对多通道图像卷积"><span class="nav-text">2.2.2. 对多通道图像卷积</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-3-计算特征图的大小"><span class="nav-text">2.2.3. 计算特征图的大小</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-多核卷积"><span class="nav-text">2.3. 多核卷积</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-多层卷积"><span class="nav-text">2.4. 多层卷积</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-5-过拟合-Overfitting"><span class="nav-text">2.5. 过拟合 Overfitting</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-5-1-池化-Polling"><span class="nav-text">2.5.1. 池化 Polling</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#池化方法"><span class="nav-text">池化方法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-5-2-失活-Dropout"><span class="nav-text">2.5.2. 失活 Dropout</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-6-局部响应归一化-Local-Response-Normalization"><span class="nav-text">2.6. 局部响应归一化 Local Response Normalization</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-7-SoftMax"><span class="nav-text">2.7. SoftMax</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-参考"><span class="nav-text">3. 参考</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Andie</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.7.0"></script>
+
+  <script src="/js/src/motion.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/affix.js?v=6.7.0"></script>
+
+  <script src="/js/src/schemes/pisces.js?v=6.7.0"></script>
+
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=6.7.0"></script>
+<script src="/js/src/post-details.js?v=6.7.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+
+
+  
+
+<script src="//cdn1.lncld.net/static/js/3.11.1/av-min.js"></script>
+
+
+
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+
+<script>
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(function (item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: true,
+    appId: 'VVPQKgngmGHeLTvsuOfEB25g-gzGzoHsz',
+    appKey: 'ayIKVGYRUpGNN6IJHzR7H2kS',
+    placeholder: 'Comment here',
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: true
+  });
+</script>
+
+
+
+  
+
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+      }
+      else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+  
+
+  
+  
+
+  
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+  
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      
+      equationNumbers: {
+        autoNumber: "AMS"
+      }
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+      for (i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+<style>
+.MathJax_Display {
+  overflow: auto hidden;
+}
+</style>
+
+    
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  <style>
+    .copy-btn {
+      display: inline-block;
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 20px;
+      color: #333;
+      white-space: nowrap;
+      vertical-align: middle;
+      cursor: pointer;
+      background-color: #eee;
+      background-image: linear-gradient(#fcfcfc, #eee);
+      border: 1px solid #d5d5d5;
+      border-radius: 3px;
+      user-select: none;
+      outline: 0;
+    }
+
+    .highlight-wrap .copy-btn {
+      transition: opacity .3s ease-in-out;
+      opacity: 0;
+      padding: 2px 6px;
+      position: absolute;
+      right: 4px;
+      top: 8px;
+    }
+
+    .highlight-wrap:hover .copy-btn,
+    .highlight-wrap .copy-btn:focus {
+      opacity: 1
+    }
+
+    .highlight-wrap {
+      position: relative;
+    }
+  </style>
+  <script>
+    $('.highlight').each(function (i, e) {
+      var $wrap = $('<div>').addClass('highlight-wrap');
+      $(e).after($wrap);
+      $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function (e) {
+        var code = $(this).parent().find('.code').find('.line').map(function (i, e) {
+          return $(e).text();
+        }).toArray().join('\n');
+        var ta = document.createElement('textarea');
+        var range = document.createRange(); //For Chrome
+        var sel = window.getSelection(); //For Chrome
+        var yPosition = window.pageYOffset || document.documentElement.scrollTop;
+        ta.style.top = yPosition + 'px'; //Prevent page scroll
+        ta.style.position = 'absolute';
+        ta.style.opacity = '0';
+        ta.value = code;
+        ta.textContent = code; //For FireFox
+        ta.contentEditable = true;
+        ta.readOnly = false;
+        document.body.appendChild(ta);
+        range.selectNode(ta);
+        sel.removeAllRanges();
+        sel.addRange(range);
+        ta.setSelectionRange(0, code.length);
+        var result = document.execCommand('copy');
+        
+          if (result) $(this).text('复制成功');
+          else $(this).text('复制失败');
+        
+        ta.blur(); //For iOS
+        $(this).blur();
+      })).on('mouseleave', function (e) {
+        var $b = $(this).find('.copy-btn');
+        setTimeout(function () {
+          $b.text('复制');
+        }, 300);
+      }).append(e);
+    })
+  </script>
+
+
+  
+
+</body>
+</html>

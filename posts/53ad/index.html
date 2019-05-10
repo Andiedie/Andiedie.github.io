@@ -1,0 +1,1486 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html class="theme-next gemini" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+  <meta name="google-site-verification" content="aKFe-l6Y-FYv_TGfjx70Zpmqy38r4zTmQEf8Gal6Gcs">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link rel="stylesheet" href="//fonts.lug.ustc.edu.cn/css?family=Lato:300,300italic,400,400italic,700,700italic|Rationale:300,300italic,400,400italic,700,700italic|Source Code Pro:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext">
+  
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=6.7.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-smile.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-smile.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-smile.png?v=6.7.0">
+
+
+  <link rel="mask-icon" href="/images/smile.svg?v=6.7.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.7.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="1. 持续集成1.1. 持续集成的概念 Continuous Integration is a software development practice where members of a team integrate their work frequently, usually each person integrates at least daily - leading to multip">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用Travis进行持续集成">
+<meta property="og:url" content="http://blog.andiedie.cn/posts/53ad/index.html">
+<meta property="og:site_name" content="Andie&#39;s Blog">
+<meta property="og:description" content="1. 持续集成1.1. 持续集成的概念 Continuous Integration is a software development practice where members of a team integrate their work frequently, usually each person integrates at least daily - leading to multip">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://blog.andiedie.cn/assets/92417939.jpg">
+<meta property="og:image" content="http://blog.andiedie.cn/assets/3870977.jpg">
+<meta property="og:image" content="http://blog.andiedie.cn/assets/7491701.jpg">
+<meta property="og:image" content="http://blog.andiedie.cn/assets/44179147.jpg">
+<meta property="og:image" content="http://blog.andiedie.cn/assets/64635121.jpg">
+<meta property="og:updated_time" content="2019-05-10T13:08:07.545Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用Travis进行持续集成">
+<meta name="twitter:description" content="1. 持续集成1.1. 持续集成的概念 Continuous Integration is a software development practice where members of a team integrate their work frequently, usually each person integrates at least daily - leading to multip">
+<meta name="twitter:image" content="http://blog.andiedie.cn/assets/92417939.jpg">
+
+
+
+  <link rel="alternate" href="/feed.xml" title="Andie's Blog" type="application/atom+xml">
+
+
+
+
+  <link rel="canonical" href="http://blog.andiedie.cn/posts/53ad/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>使用Travis进行持续集成 | Andie's Blog</title>
+  
+
+
+
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-126454098-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-126454098-1');
+  </script>
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Andie's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.andiedie.cn/posts/53ad/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Andie">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar-smile.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Andie's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">使用Travis进行持续集成
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-04-04 11:19:51" itemprop="dateCreated datePublished" datetime="2018-04-04T11:19:51+08:00">2018-04-04</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-05-10 21:08:07" itemprop="dateModified" datetime="2019-05-10T21:08:07+08:00">2019-05-10</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Homework/" itemprop="url" rel="index"><span itemprop="name">Homework</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/posts/53ad/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/posts/53ad/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+            <span id="/posts/53ad/" class="leancloud_visitors" data-flag-title="使用Travis进行持续集成">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="1-持续集成"><a href="#1-持续集成" class="headerlink" title="1. 持续集成"></a>1. 持续集成</h1><h2 id="1-1-持续集成的概念"><a href="#1-1-持续集成的概念" class="headerlink" title="1.1. 持续集成的概念"></a>1.1. 持续集成的概念</h2><blockquote>
+<p>Continuous Integration is a software development practice where members of a team integrate their work frequently, usually each person integrates at least daily - leading to multiple integrations per day. Each integration is verified by an automated build (including test) to detect integration errors as quickly as possible. Many teams find that this approach leads to significantly reduced integration problems and allows a team to develop cohesive software more rapidly. ——Martin Fowler</p>
+</blockquote>
+<p>Martin Fowler关于持续集成的完整文章，可以从<a href="https://www.martinfowler.com/articles/continuousIntegration.html" target="_blank" rel="noopener">这里</a>获取。</p>
+<a id="more"></a>
+<h2 id="1-2-持续集成的要素"><a href="#1-2-持续集成的要素" class="headerlink" title="1.2. 持续集成的要素"></a>1.2. 持续集成的要素</h2><ol>
+<li>统一的代码库</li>
+<li>自动构建</li>
+<li>自动测试</li>
+<li>每次代码提交后都会触发一次构建</li>
+<li>可以很容易地获取最新可执行的程序</li>
+<li>自动化部署</li>
+</ol>
+<p>现在使用<a href="https://travis-ci.org/" target="_blank" rel="noopener">Travis CI</a>我们可以很容易的实现持续集成。</p>
+<h1 id="2-使用Travis-CI-实现自动测试"><a href="#2-使用Travis-CI-实现自动测试" class="headerlink" title="2. 使用Travis CI 实现自动测试"></a>2. 使用Travis CI 实现自动测试</h1><p><strong>Travis CI</strong>是在软件开发领域中的一个在线的，分布式的持续集成服务，用来构建及测试在GitHub托管的代码。Travis只能在GitHub项目上使用，只要项目有改动，Travis就会为其提供一个运行环境，执行测试、构建甚至部署任务。下面将演示如何配置Node.js项目的自动测试。</p>
+<h2 id="2-1-为项目开启Travis"><a href="#2-1-为项目开启Travis" class="headerlink" title="2.1. 为项目开启Travis"></a>2.1. 为项目开启Travis</h2><p>进入<a href="https://travis-ci.org" target="_blank" rel="noopener">Travis</a>，使用GItHub账号登录，点击右上角的头像，进入Profile。选择项目，打开开关即可。</p>
+<p><img src="/assets/92417939.jpg" alt=""></p>
+<h2 id="2-2-基本配置"><a href="#2-2-基本配置" class="headerlink" title="2.2. 基本配置"></a>2.2. 基本配置</h2><p>点击项目名和开关之间的齿轮可以进入设置页，在这里你可以进行相关的配置，不过大多数情况下<strong>保持默认</strong>即可。</p>
+<h3 id="2-2-1-基础设置"><a href="#2-2-1-基础设置" class="headerlink" title="2.2.1. 基础设置"></a>2.2.1. 基础设置</h3><p><img src="/assets/3870977.jpg" alt=""></p>
+<p>建议打开<strong>Build only if .travis.yml is present</strong>可以避免在没有配置文件的时候进行无意义的构建工作。此外也可以配置是否对分支、PR进行构建，并限制并行数量。</p>
+<h3 id="2-2-2-自动取消"><a href="#2-2-2-自动取消" class="headerlink" title="2.2.2. 自动取消"></a>2.2.2. 自动取消</h3><p><img src="/assets/7491701.jpg" alt=""></p>
+<p>建议开启，开启后如果队列中积压了大量的构建任务（比如一次性提交了大量的commit），那么Travis只会对最新的commit进行构建，避免过长的等待时间。要注意的是，自动取消只会对等待中的任务生效，也就是说，如果你的任务正在运行，那么即使有更新的任务出现，当前任务也不会被取消。</p>
+<h3 id="2-2-3-环境变量与计划任务"><a href="#2-2-3-环境变量与计划任务" class="headerlink" title="2.2.3. 环境变量与计划任务"></a>2.2.3. 环境变量与计划任务</h3><p>在这里你可以定义任务中可以随时使用的环境变量，在本文的后续内容中也会有环境变量的简单使用。</p>
+<p>此外，你还可以设置计划任务，让Travis定时对你的项目进行测试和构建。</p>
+<h2 id="2-3-编写-travis-yml"><a href="#2-3-编写-travis-yml" class="headerlink" title="2.3. 编写.travis.yml"></a>2.3. 编写<code>.travis.yml</code></h2><p>首先假设你的node.js项目已经编写完成，并且可以通过<code>npm test</code>运行测试命令。</p>
+<p>在项目根目录，创建文件<code>.travis.yml</code></p>
+<figure class="highlight yaml"><figcaption><span>.travis.yml</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">language:</span> <span class="string">node_js</span></span><br><span class="line"><span class="attr">node_js:</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">'9'</span></span><br><span class="line"><span class="attr">install:</span> <span class="string">npm</span> <span class="string">install</span></span><br><span class="line"><span class="attr">script:</span> <span class="string">npm</span> <span class="string">test</span></span><br></pre></td></tr></table></figure>
+<p>这个配置文件描述了Travis将如何工作。首先我们将语言选定为了<code>node.js</code>并指定node.js的版本号为9.x.x，当然你可以指定多个版本号，Travis将在每个版本中都对你的代码进行构建和测试。</p>
+<p>此外我们还定义了两个过程：<code>install</code>和<code>script</code>，它们分别告诉了Travis如何安装依赖，如何进行测试。</p>
+<p>将这个文件推上GitHub，登录Travis，你会发现它正在自动的为你的项目进行构建、下载依赖并进行测试。如果测试通过，测试结果在GitHub的上有相应的标注。</p>
+<p>至此，我们就利用Travis完成了自动测试，你在项目中的每一次改动，包括<code>commit</code>、<code>branch</code>和<code>pull request</code>，Travis都会按照.<code>travis.yml</code>的配置进行测试。</p>
+<p><img src="/assets/44179147.jpg" alt=""></p>
+<h2 id="2-4-生命周期"><a href="#2-4-生命周期" class="headerlink" title="2.4. 生命周期"></a>2.4. 生命周期</h2><p>除了上述的<code>install</code>和<code>script</code>，Travis还提供了大量的钩子函数</p>
+<ul>
+<li>install：依赖安装</li>
+<li>script：测试（如果install失败则不运行）</li>
+<li>deploy：部署（如果script失败则不运行）</li>
+</ul>
+<ul>
+<li>before_install：install之前运行</li>
+<li>before_script：script之前运行</li>
+<li>after_failure：script失败后运行</li>
+<li>after_success：script成功后运行</li>
+<li>before_deploy：deploy之前运行</li>
+<li>after_deploy：deploy之后运行</li>
+<li>after_script：在整个过程的最后执行</li>
+</ul>
+<p>完整的构建生命周期如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">before_install</span><br><span class="line">install</span><br><span class="line">before_script</span><br><span class="line">script</span><br><span class="line">after_success or after_failure</span><br><span class="line">before_deploy</span><br><span class="line">deploy</span><br><span class="line">after_deploy</span><br><span class="line">after_script</span><br></pre></td></tr></table></figure>
+<p>生命周期中的每一个钩子函数都可以定义多个脚本，例如</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">install:</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">command1</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">command2</span></span><br></pre></td></tr></table></figure>
+<p>此时当执行到<code>install</code>阶段时，<code>install</code>中的每一个命令都会被执行。且即使<code>command1</code>失败了，<code>command2</code>也会被执行。如果希望<code>command1</code>失败后不执行<code>command2</code>，可以用以下方法：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">install:</span> <span class="string">command1</span> <span class="string">&amp;&amp;</span> <span class="string">command2</span></span><br></pre></td></tr></table></figure>
+<h1 id="3-使用Travis-CI-实现自动部署"><a href="#3-使用Travis-CI-实现自动部署" class="headerlink" title="3. 使用Travis CI 实现自动部署"></a>3. 使用Travis CI 实现自动部署</h1><p>自动测试完成后，我们希望将测试通过的版本自动部署到服务器上。基本的思路是，让Travis登录服务器，并在服务器上运行部署脚本。</p>
+<h2 id="3-1-Travis登录服务器"><a href="#3-1-Travis登录服务器" class="headerlink" title="3.1. Travis登录服务器"></a>3.1. Travis登录服务器</h2><p>假设服务器地址是1.2.3.4。最简单的方法就是使用SSH Key登录。</p>
+<h3 id="3-1-1-生成SSH-Key"><a href="#3-1-1-生成SSH-Key" class="headerlink" title="3.1.1. 生成SSH Key"></a>3.1.1. 生成SSH Key</h3><p>具体可见<a href="/2017/11/17/通过SSH-Key登录Linux/">通过SSH Key登录Linux</a>，这里只展示简单的命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 生成key和key.pub两个文件</span></span><br><span class="line">ssh-keygen -f key</span><br><span class="line"></span><br><span class="line"><span class="comment"># 将公钥上传到服务器</span></span><br><span class="line">ssh-copy-id -i key.pub user@1.2.3.4</span><br></pre></td></tr></table></figure>
+<h3 id="3-1-2-配置"><a href="#3-1-2-配置" class="headerlink" title="3.1.2. 配置"></a>3.1.2. 配置</h3><p>将当前目录下的<code>key</code>文件复制到项目根目录中</p>
+<figure class="highlight yaml"><figcaption><span>.travis.yml</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">language:</span> <span class="string">node_js</span></span><br><span class="line"><span class="attr">node_js:</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">'9'</span></span><br><span class="line"><span class="attr">addons:</span></span><br><span class="line">	<span class="attr">ssh_known_hosts:</span> <span class="number">1.2</span><span class="number">.3</span><span class="number">.4</span></span><br><span class="line"></span><br><span class="line"><span class="attr">install:</span> <span class="string">npm</span> <span class="string">install</span></span><br><span class="line"><span class="attr">script:</span> <span class="string">npm</span> <span class="string">test</span></span><br><span class="line"></span><br><span class="line"><span class="attr">before_deploy:</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">eval</span> <span class="string">"$(ssh-agent -s)"</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">chmod</span> <span class="number">600</span> <span class="string">key</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">ssh-add</span> <span class="string">key</span></span><br><span class="line"></span><br><span class="line"><span class="attr">deploy:</span></span><br><span class="line">	<span class="attr">provider:</span> <span class="string">script</span></span><br><span class="line">	<span class="attr">script:</span> <span class="string">ssh</span> <span class="bullet">-i</span> <span class="string">key</span> <span class="string">user@1.2.3.4</span></span><br></pre></td></tr></table></figure>
+<p>这样我们就可以让Travis登录上我们的服务器，但是如果项目是在GitHub上开源的，那么相当于登录服务器的私钥也公开了，这当然是不可接受的。因此，我们将使用一种更加安全的方法。</p>
+<h2 id="3-2-更加安全地登录服务器"><a href="#3-2-更加安全地登录服务器" class="headerlink" title="3.2. 更加安全地登录服务器"></a>3.2. 更加安全地登录服务器</h2><p>为了避免私钥公开，我们可以使用Travis的加密方法对私钥进行加密。</p>
+<h3 id="3-2-1-下载Travis命令行工具"><a href="#3-2-1-下载Travis命令行工具" class="headerlink" title="3.2.1. 下载Travis命令行工具"></a>3.2.1. 下载Travis命令行工具</h3><p>查看<a href="https://github.com/travis-ci/travis.rb#installation" target="_blank" rel="noopener">这里</a>了解如何安装Travis，由于Windows环境比较复杂，推荐使用linux环境，Windows用户可以使用WSL（WSL相关教程见<a href="2018/03/26/WSL安装与SSH配置/">WSL安装与SSH配置</a>）。</p>
+<p>运行下列命令安装Travis CLI</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装ruby</span></span><br><span class="line">sudo apt install ruby ruby-dev</span><br><span class="line"><span class="comment"># 安装travis</span></span><br><span class="line">gem install travis -v 1.8.8 --no-rdoc --no-ri</span><br><span class="line"></span><br><span class="line"><span class="comment"># 测试</span></span><br><span class="line">travis version</span><br><span class="line"><span class="comment"># &gt; 1.8.8</span></span><br></pre></td></tr></table></figure>
+<h3 id="3-2-2-登录Travis"><a href="#3-2-2-登录Travis" class="headerlink" title="3.2.2. 登录Travis"></a>3.2.2. 登录Travis</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 登录Travis</span></span><br><span class="line">travis login</span><br><span class="line"><span class="comment"># 确认登录</span></span><br><span class="line">travis whoami</span><br><span class="line"><span class="comment"># &gt; You are xxx</span></span><br></pre></td></tr></table></figure>
+<h3 id="3-2-3-加密私钥文件"><a href="#3-2-3-加密私钥文件" class="headerlink" title="3.2.3. 加密私钥文件"></a>3.2.3. 加密私钥文件</h3><p>现在我们假设私钥文件<code>key</code>和<code>.travis.yml</code>都处于项目根目录</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># cd到key所在的目录（比如项目根目录）</span></span><br><span class="line"><span class="built_in">cd</span> path/to/key</span><br><span class="line"></span><br><span class="line"><span class="comment"># 加密文件</span></span><br><span class="line">travis encrypt-file key --add</span><br></pre></td></tr></table></figure>
+<p>加密完后，当前目录下会增加一个<code>key.enc</code>文件，即<code>key</code>加密后的文件。请注意，不要将<code>key</code>上传到GitHub，取而代之的是<code>key.enc</code>。</p>
+<p>另外进入Travis网站中，项目的设置页面，可以看到新增的环境变量</p>
+<p><img src="/assets/64635121.jpg" alt=""></p>
+<p>并且<code>.travis.yml</code>中会增加一行这样的配置</p>
+<figure class="highlight yaml"><figcaption><span>.travis.yml</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">before_install:</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">openssl</span> <span class="string">aes-256-cbc</span> <span class="bullet">-K</span> <span class="string">$encrypted_57510f08f3ae_key</span> <span class="bullet">-iv</span> <span class="string">$encrypted_57510f08f3ae_iv</span></span><br></pre></td></tr></table></figure>
+<p>这里<code>$xxxx</code>就是引用了环境变量，并使用openssl对私钥文件进行解密。</p>
+<h3 id="3-3-travis-yml配置"><a href="#3-3-travis-yml配置" class="headerlink" title="3.3. .travis.yml配置"></a>3.3. <code>.travis.yml</code>配置</h3><figure class="highlight yaml"><figcaption><span>.travis.yml</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">language:</span> <span class="string">node_js</span></span><br><span class="line"><span class="attr">node_js:</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">'9'</span></span><br><span class="line"></span><br><span class="line"><span class="attr">install:</span> <span class="string">npm</span> <span class="string">install</span></span><br><span class="line"></span><br><span class="line"><span class="attr">script:</span> <span class="string">npm</span> <span class="string">test</span></span><br><span class="line"></span><br><span class="line"><span class="attr">addons:</span></span><br><span class="line"><span class="attr">  ssh_known_hosts:</span> <span class="number">119.29</span><span class="number">.252</span><span class="number">.110</span></span><br><span class="line"></span><br><span class="line"><span class="attr">before_deploy:</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">openssl</span> <span class="string">aes-256-cbc</span> <span class="bullet">-K</span> <span class="string">$encrypted_57510f08f3ae_key</span> <span class="bullet">-iv</span> <span class="string">$encrypted_57510f08f3ae_iv</span></span><br><span class="line"><span class="bullet">  -</span><span class="string">in</span> <span class="string">deploy_rsa.enc</span> <span class="bullet">-out</span> <span class="string">deploy_rsa</span> <span class="bullet">-d</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">eval</span> <span class="string">"$(ssh-agent -s)"</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">chmod</span> <span class="number">600</span> <span class="string">key</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">ssh-add</span> <span class="string">key</span></span><br><span class="line"></span><br><span class="line"><span class="attr">deploy:</span></span><br><span class="line"><span class="attr">  provider:</span> <span class="string">script</span></span><br><span class="line"><span class="attr">  script:</span> <span class="string">bash</span> <span class="string">deploy.sh</span></span><br><span class="line"><span class="attr">  skip_cleanup:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">  on:</span></span><br><span class="line"><span class="attr">    branch:</span> <span class="string">master</span></span><br></pre></td></tr></table></figure>
+<p>注意到这里我们新增了几行：</p>
+<ul>
+<li><code>before_deploy</code>中的第一个命令是用于解密私钥文件<code>key</code></li>
+<li><code>skip_cleanup</code>是为了避免部署阶段一些文件被清除，具体可以参阅官方文档</li>
+<li><code>on branch master</code>这里是指定了只有master分支上的改动才需要进行部署</li>
+<li><code>bash deploy.sh</code>请见下一节</li>
+</ul>
+<h2 id="3-4-编写部署脚本"><a href="#3-4-编写部署脚本" class="headerlink" title="3.4. 编写部署脚本"></a>3.4. 编写部署脚本</h2><p>为了便于管理，我们让deploy阶段运行我们的部署脚本<code>deploy.sh</code>，那么该如何编写这个脚本呢？</p>
+<p>非常简单：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">ssh -i key user@1.2.3.4 &lt;&lt; eeooff</span><br><span class="line"></span><br><span class="line">command1</span><br><span class="line">command2</span><br><span class="line"></span><br><span class="line">eeooff</span><br></pre></td></tr></table></figure>
+<p>按照上面的格式，将需要再服务端上运行的命令放在两个<code>eeooff</code>中间即可。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+      <div>
+        
+
+
+
+  
+
+
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Andie</li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    
+    <a href="http://blog.andiedie.cn/posts/53ad/" title="使用Travis进行持续集成">http://blog.andiedie.cn/posts/53ad/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/posts/c31d/" rel="next" title="实训报告 1st">
+                <i class="fa fa-chevron-left"></i> 实训报告 1st
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/posts/abbd/" rel="prev" title="SyncMyCookie 中文文档">
+                SyncMyCookie 中文文档 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar-smile.png" alt="Andie">
+            
+              <p class="site-author-name" itemprop="name">Andie</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">16</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">5</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/feed.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/Andiedie" title="GitHub &rarr; https://github.com/Andiedie" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:zchangan@163.com" title="E-Mail &rarr; mailto:zchangan@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            </div>
+          
+
+          
+             <div class="cc-license motion-element" itemprop="license">
+              
+                
+              
+              
+              
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+             </div>
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-持续集成"><span class="nav-text">1. 持续集成</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-持续集成的概念"><span class="nav-text">1.1. 持续集成的概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-持续集成的要素"><span class="nav-text">1.2. 持续集成的要素</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-使用Travis-CI-实现自动测试"><span class="nav-text">2. 使用Travis CI 实现自动测试</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-为项目开启Travis"><span class="nav-text">2.1. 为项目开启Travis</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-基本配置"><span class="nav-text">2.2. 基本配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-1-基础设置"><span class="nav-text">2.2.1. 基础设置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-2-自动取消"><span class="nav-text">2.2.2. 自动取消</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-3-环境变量与计划任务"><span class="nav-text">2.2.3. 环境变量与计划任务</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-编写-travis-yml"><span class="nav-text">2.3. 编写.travis.yml</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-生命周期"><span class="nav-text">2.4. 生命周期</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-使用Travis-CI-实现自动部署"><span class="nav-text">3. 使用Travis CI 实现自动部署</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-Travis登录服务器"><span class="nav-text">3.1. Travis登录服务器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-1-生成SSH-Key"><span class="nav-text">3.1.1. 生成SSH Key</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-2-配置"><span class="nav-text">3.1.2. 配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-更加安全地登录服务器"><span class="nav-text">3.2. 更加安全地登录服务器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-1-下载Travis命令行工具"><span class="nav-text">3.2.1. 下载Travis命令行工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-2-登录Travis"><span class="nav-text">3.2.2. 登录Travis</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-3-加密私钥文件"><span class="nav-text">3.2.3. 加密私钥文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-travis-yml配置"><span class="nav-text">3.3. .travis.yml配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-4-编写部署脚本"><span class="nav-text">3.4. 编写部署脚本</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Andie</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.7.0"></script>
+
+  <script src="/js/src/motion.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/affix.js?v=6.7.0"></script>
+
+  <script src="/js/src/schemes/pisces.js?v=6.7.0"></script>
+
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=6.7.0"></script>
+<script src="/js/src/post-details.js?v=6.7.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+
+
+  
+
+<script src="//cdn1.lncld.net/static/js/3.11.1/av-min.js"></script>
+
+
+
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+
+<script>
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(function (item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: true,
+    appId: 'VVPQKgngmGHeLTvsuOfEB25g-gzGzoHsz',
+    appKey: 'ayIKVGYRUpGNN6IJHzR7H2kS',
+    placeholder: 'Comment here',
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: true
+  });
+</script>
+
+
+
+  
+
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+      }
+      else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+  
+
+  
+  
+
+  
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  <style>
+    .copy-btn {
+      display: inline-block;
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 20px;
+      color: #333;
+      white-space: nowrap;
+      vertical-align: middle;
+      cursor: pointer;
+      background-color: #eee;
+      background-image: linear-gradient(#fcfcfc, #eee);
+      border: 1px solid #d5d5d5;
+      border-radius: 3px;
+      user-select: none;
+      outline: 0;
+    }
+
+    .highlight-wrap .copy-btn {
+      transition: opacity .3s ease-in-out;
+      opacity: 0;
+      padding: 2px 6px;
+      position: absolute;
+      right: 4px;
+      top: 8px;
+    }
+
+    .highlight-wrap:hover .copy-btn,
+    .highlight-wrap .copy-btn:focus {
+      opacity: 1
+    }
+
+    .highlight-wrap {
+      position: relative;
+    }
+  </style>
+  <script>
+    $('.highlight').each(function (i, e) {
+      var $wrap = $('<div>').addClass('highlight-wrap');
+      $(e).after($wrap);
+      $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function (e) {
+        var code = $(this).parent().find('.code').find('.line').map(function (i, e) {
+          return $(e).text();
+        }).toArray().join('\n');
+        var ta = document.createElement('textarea');
+        var range = document.createRange(); //For Chrome
+        var sel = window.getSelection(); //For Chrome
+        var yPosition = window.pageYOffset || document.documentElement.scrollTop;
+        ta.style.top = yPosition + 'px'; //Prevent page scroll
+        ta.style.position = 'absolute';
+        ta.style.opacity = '0';
+        ta.value = code;
+        ta.textContent = code; //For FireFox
+        ta.contentEditable = true;
+        ta.readOnly = false;
+        document.body.appendChild(ta);
+        range.selectNode(ta);
+        sel.removeAllRanges();
+        sel.addRange(range);
+        ta.setSelectionRange(0, code.length);
+        var result = document.execCommand('copy');
+        
+          if (result) $(this).text('复制成功');
+          else $(this).text('复制失败');
+        
+        ta.blur(); //For iOS
+        $(this).blur();
+      })).on('mouseleave', function (e) {
+        var $b = $(this).find('.copy-btn');
+        setTimeout(function () {
+          $b.text('复制');
+        }, 300);
+      }).append(e);
+    })
+  </script>
+
+
+  
+
+</body>
+</html>

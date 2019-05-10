@@ -1,0 +1,1560 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html class="theme-next gemini" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+  <meta name="google-site-verification" content="aKFe-l6Y-FYv_TGfjx70Zpmqy38r4zTmQEf8Gal6Gcs">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link rel="stylesheet" href="//fonts.lug.ustc.edu.cn/css?family=Lato:300,300italic,400,400italic,700,700italic|Rationale:300,300italic,400,400italic,700,700italic|Source Code Pro:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext">
+  
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=6.7.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-smile.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-smile.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-smile.png?v=6.7.0">
+
+
+  <link rel="mask-icon" href="/images/smile.svg?v=6.7.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.7.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="本文主要介绍随机数的概念与分类，以及简单的统计学伪随机数算法。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="随机数是如何生成的">
+<meta property="og:url" content="http://blog.andiedie.cn/posts/d02e/index.html">
+<meta property="og:site_name" content="Andie&#39;s Blog">
+<meta property="og:description" content="本文主要介绍随机数的概念与分类，以及简单的统计学伪随机数算法。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://blog.andiedie.cn/assets/1539444972231.png">
+<meta property="og:updated_time" content="2019-05-10T13:08:07.549Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="随机数是如何生成的">
+<meta name="twitter:description" content="本文主要介绍随机数的概念与分类，以及简单的统计学伪随机数算法。">
+<meta name="twitter:image" content="http://blog.andiedie.cn/assets/1539444972231.png">
+
+
+
+  <link rel="alternate" href="/feed.xml" title="Andie's Blog" type="application/atom+xml">
+
+
+
+
+  <link rel="canonical" href="http://blog.andiedie.cn/posts/d02e/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>随机数是如何生成的 | Andie's Blog</title>
+  
+
+
+
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-126454098-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-126454098-1');
+  </script>
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Andie's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.andiedie.cn/posts/d02e/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Andie">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar-smile.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Andie's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">随机数是如何生成的
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-10-12 15:36:13" itemprop="dateCreated datePublished" datetime="2018-10-12T15:36:13+08:00">2018-10-12</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-05-10 21:08:07" itemprop="dateModified" datetime="2019-05-10T21:08:07+08:00">2019-05-10</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Principle/" itemprop="url" rel="index"><span itemprop="name">Principle</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/posts/d02e/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/posts/d02e/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+            <span id="/posts/d02e/" class="leancloud_visitors" data-flag-title="随机数是如何生成的">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文主要介绍随机数的概念与分类，以及简单的统计学伪随机数算法。</p>
+<a id="more"></a>
+<h1 id="1-随机数概念"><a href="#1-随机数概念" class="headerlink" title="1. 随机数概念"></a>1. 随机数概念</h1><p>这里我们主要讨论的是密码学范畴的随机数。随机数的随机性检验可以分为三个标准：</p>
+<ol>
+<li><strong>统计学伪随机性。</strong>在给定的随机比特流样本中，1 的数量大致等于 0 的数量。也就是说，如果我们把一个（包含足够多随机数的）随机序列里的每个随机数数转化为二进制数，并首尾相接形成一个串，那么这个串中的 1 和 0 的数量应该大致相等。满足这类要求的数字，人类“一眼看上去”是随机的。</li>
+<li><strong>密码学安全伪随机性。</strong>给定一定长度的随机序列，在多项式时间内演算出随机序列的任何部分的概率低于 50%。例如即使给定随机序列的前 100 个随机数，也无法在有效地算出第 101 个随机数是什么。这样的伪随机数序列难以被预测。</li>
+<li><strong>真随机性。</strong>随机序列不可重现。也就是说，给定相同的参数，多次计算出的结果是不同的。由于计算机算法都具备<strong>确定性</strong>的特征，因此真随机数无法通过算法生成。</li>
+</ol>
+<p>相应的，随机数被分为三类：</p>
+<ol>
+<li><strong>统计学伪随机数。</strong>仅符合第一个标准的随机数。也就是只是人类“一眼看上去”觉得随机而已。</li>
+<li><strong>密码学安全的伪随机数。</strong>符合前两个标准的的随机数，也就是说不仅人类觉得随机，而且随机序列难以预测。这种随机数可以通过<strong>密码学安全伪随机数生成器（ CSPRNG ）</strong>计算得出。</li>
+<li><strong>真随机数。</strong>同时符合三个条件的随机数，主流观点认为只有通过量子力学的内禀随机性生成的随机数才是真随机数。</li>
+</ol>
+<h1 id="2-统计学伪随机数算法"><a href="#2-统计学伪随机数算法" class="headerlink" title="2. 统计学伪随机数算法"></a>2. 统计学伪随机数算法</h1><h2 id="2-1-平方取中法-Middle-square-method"><a href="#2-1-平方取中法-Middle-square-method" class="headerlink" title="2.1. 平方取中法 Middle-square method"></a>2.1. 平方取中法 Middle-square method</h2><h3 id="算法描述"><a href="#算法描述" class="headerlink" title="算法描述"></a>算法描述</h3><p>该方法由冯 · 诺伊曼在 1946 年提出，算法非常简单：</p>
+<ol>
+<li>选择一个 m 位数 $N_i$ 作为种子</li>
+<li>计算 $N_i^2$</li>
+<li>若 $N_i^2$ 不足 2m 位，在前补 0。选择这个数中间 m 个位的数，即 $10^{\lfloor m/2 \rfloor}$ 至 $10^{\lfloor m/2 \rfloor + m}$ 的数，将结果作为 $N_{i+1}$。</li>
+</ol>
+<p>以 675248 为种子为例，675248 的平方为 455959861504，最后取最中间的 6 位数字作为结果：959861。</p>
+<p><img src="/assets/1539444972231.png" alt="1539444972231"></p>
+<h3 id="简单实现"><a href="#简单实现" class="headerlink" title="简单实现"></a>简单实现</h3><p>Python 实现如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">seed = <span class="string">'675248'</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">middleSquare</span><span class="params">()</span>:</span></span><br><span class="line">  <span class="keyword">global</span> seed</span><br><span class="line">  length = len(seed)</span><br><span class="line">  square =  int(seed) * int(seed)</span><br><span class="line">  seed = str(square).zfill(length * <span class="number">2</span>)[int(length / <span class="number">2</span>):int(length / <span class="number">2</span>) + length]</span><br><span class="line">  <span class="keyword">return</span> int(seed)</span><br></pre></td></tr></table></figure>
+<h3 id="体验"><a href="#体验" class="headerlink" title="体验"></a>体验</h3>
+
+<p data-height="344" data-theme-id="0" data-slug-hash="BGJxVE" data-default-tab="result" data-user="Andiedie" data-pen-title="BGJxVE" class="codepen">See the Pen <a href="https://codepen.io/Andiedie/pen/BGJxVE/" target="_blank" rel="noopener">BGJxVE</a> by Andie (<a href="https://codepen.io/Andiedie" target="_blank" rel="noopener">@Andiedie</a>) on <a href="https://codepen.io" target="_blank" rel="noopener">CodePen</a>.</p>
+<script async src="https://static.codepen.io/assets/embed/ei.js"></script>
+
+
+<h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><ul>
+<li>总体周期过短。对于 n 位数的种子，它的循环周期总是小于等于 $8^n$。</li>
+<li>如果中间 n 位都是零，接下来就会永远输出 0。</li>
+<li>如果种子的前半部分为 0，那么后续的随机序列很快就会变成 0。你可以尝试在上面的 <code>Seed</code> 位置填入<code>0099</code>，并点击多次 <code>Get Next</code>。</li>
+<li>随机队列卡住不变。例如当种子是 0100、2500、3792、7600 时，随机序列将永远不会改变。而这只是四位数种子时的情况。</li>
+<li>一些特殊的序列还会产生极短的周期。例如 0540 -&gt; 2916 -&gt; 5030 -&gt; 3009。事实上，00 ~ 99 这 100 个二位数种子，没有任何一个周期可以超过 14。</li>
+</ul>
+<h2 id="2-2-线性同余方法-Linear-congruential-generator"><a href="#2-2-线性同余方法-Linear-congruential-generator" class="headerlink" title="2.2. 线性同余方法 Linear congruential generator"></a>2.2. 线性同余方法 Linear congruential generator</h2><h3 id="算法描述-1"><a href="#算法描述-1" class="headerlink" title="算法描述"></a>算法描述</h3><p>线性同于方法（简称 LCG ），原理如下：</p>
+<p>$X_{n+1}= (aX_n+c) \mod m$</p>
+<p>其中：</p>
+<ul>
+<li>$m$ 是模数，$m &gt; 0$</li>
+<li>$a$ 是乘数，$0 &lt; a &lt; m$</li>
+<li>$c$ 是增量，$0 \le c &lt; m$</li>
+<li>$X_0$ 是种子，$0 \le X_0 &lt; m$</li>
+</ul>
+<p>线性同余方法就通过不断计算该式子，递推地算出随机序列。</p>
+<p>需要注意的是，LCG 对参数的选择极其敏感。好的参数选择，可以使 LCG 产生的随机数队列序列拥有很长的周期，解决上述平方取中法的缺陷。但是糟糕的参数选择也会使得 LCG 的表现非常差。</p>
+<p>一些常用的参数：</p>
+<table>
+<thead>
+<tr>
+<th>来源</th>
+<th>模数 $m$</th>
+<th>乘数 $a$</th>
+<th>增量 $c$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C++11 的 <code>minstd_rand0</code></td>
+<td>$2^{31}-1$</td>
+<td>16807</td>
+<td>0</td>
+</tr>
+<tr>
+<td>C++11 的 <code>minstd_rand</code></td>
+<td>$2^{31}-1$</td>
+<td>48271</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Java 的 <code>java.util.Random</code></td>
+<td>$2^{48}$</td>
+<td>25214903917</td>
+<td>11</td>
+</tr>
+</tbody>
+</table>
+<p>要注意的是，LCG 并不总是将计算结果的全部二进制位都作为输出。比如 Java 在每次迭代中使用 48 位进行计算，但是只返回结果中的 32 个高有效位。这是因为（统计上）使用这种截断方法可以拥有更长的周期，产生更加好的随机序列。</p>
+<h3 id="简单实现-1"><a href="#简单实现-1" class="headerlink" title="简单实现"></a>简单实现</h3><p>Python 实现如下，这里的参数使用的是与 C++11 的 <code>minstd_rand</code> 相同的参数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">seed = <span class="number">1</span></span><br><span class="line">m = <span class="number">2</span>**<span class="number">31</span> - <span class="number">1</span></span><br><span class="line">a = <span class="number">48271</span></span><br><span class="line">c = <span class="number">0</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">linearCongruential</span><span class="params">()</span>:</span></span><br><span class="line">  <span class="keyword">global</span> seed</span><br><span class="line">  seed = (a * seed + c) % m</span><br><span class="line">  <span class="keyword">return</span> seed</span><br></pre></td></tr></table></figure>
+<h3 id="体验-1"><a href="#体验-1" class="headerlink" title="体验"></a>体验</h3>
+
+<p data-height="429" data-theme-id="0" data-slug-hash="KrZRbd" data-default-tab="result" data-user="Andiedie" data-pen-title="随机数-线性同余法" class="codepen">See the Pen <a href="https://codepen.io/Andiedie/pen/KrZRbd/" target="_blank" rel="noopener">随机数-线性同余法</a> by Andie (<a href="https://codepen.io/Andiedie" target="_blank" rel="noopener">@Andiedie</a>) on <a href="https://codepen.io" target="_blank" rel="noopener">CodePen</a>.</p>
+<script async src="https://static.codepen.io/assets/embed/ei.js"></script>
+
+
+<h3 id="优缺点"><a href="#优缺点" class="headerlink" title="优缺点"></a>优缺点</h3><p>优点：</p>
+<p>LCG 速度快，且非常省空间（通常只需要 32 位或者 64 位）。且当周期足够大时，LCG 甚至可以通过一些严格的统计测试。</p>
+<p>缺点：</p>
+<p>通过线性同余方法构建的伪随机数生成器的参数可以轻易地由其输出的随机序列演算得知，所以此种伪随机数生成器属于统计学伪随机数生成器。</p>
+<p>此外，LCG 产生的随机序列的最大周期是模数 $m$，通常是 $2^{32}$ 左右，这对于大多数场景来说已经足够了。不过对于某些应用来说，这样的周期还不够大。</p>
+<h2 id="2-3-梅森旋转算法-Mersenne-twister"><a href="#2-3-梅森旋转算法-Mersenne-twister" class="headerlink" title="2.3. 梅森旋转算法 Mersenne twister"></a>2.3. 梅森旋转算法 Mersenne twister</h2><p>梅森旋转算法松本真和西村拓士在 1997 年开发，可以快速产生高质量的伪随机数，修正了古典随机数发生算法的很多缺陷，是 R、Python、Ruby、IDL、Free Pascal、PHP、Maple、MATLAB、GNU 多重精度运算库和 GSL 的默认伪随机数产生器。从 C++11 开始，C++ 也可以使用这种算法。</p>
+<h3 id="算法描述-2"><a href="#算法描述-2" class="headerlink" title="算法描述"></a>算法描述</h3><p>目前使用最广泛的是 MT19937，可以产生 32 位的整数序列。整个算法主要分为三个阶段：</p>
+<ol>
+<li>初始化：根据种子生成初始状态。</li>
+<li>迭代：迭代产生下一个状态。</li>
+<li>提取：从当前状态中提取随机数。</li>
+</ol>
+<h3 id="简单实现-2"><a href="#简单实现-2" class="headerlink" title="简单实现"></a>简单实现</h3><p>Python 实现如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MT19937</span>:</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, seed = <span class="number">0</span>)</span>:</span></span><br><span class="line">    self.state = [<span class="number">0</span>] * <span class="number">624</span></span><br><span class="line">    self.index = <span class="number">0</span></span><br><span class="line">    self.state[<span class="number">0</span>] = seed</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, <span class="number">624</span>):</span><br><span class="line">      self.state[i] = (<span class="number">0x6c078965</span> * (self.state[i - <span class="number">1</span>] ^ (self.state[i - <span class="number">1</span>] &gt;&gt; <span class="number">30</span>)) + i) &amp; <span class="number">0xffffffff</span></span><br><span class="line">  </span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">generate_numbers</span><span class="params">(self)</span>:</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">624</span>):</span><br><span class="line">      y = (self.state[i] &amp; <span class="number">0x80000000</span>) + (self.state[(i + <span class="number">1</span>) % <span class="number">624</span>] &amp; <span class="number">0x7fffffff</span>)</span><br><span class="line">      self.state[i] = self.state[(i + <span class="number">397</span>) % <span class="number">624</span>] ^ (y &gt;&gt; <span class="number">1</span>)</span><br><span class="line">      <span class="keyword">if</span> y % <span class="number">2</span>:</span><br><span class="line">        self.state[i] = self.state[i] ^ <span class="number">0x9908b0df</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">extract_number</span><span class="params">(self)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> self.index == <span class="number">0</span>:</span><br><span class="line">      self.generate_numbers()</span><br><span class="line">    y = self.state[self.index]</span><br><span class="line">    y ^= y &gt;&gt; <span class="number">11</span></span><br><span class="line">    y ^= (y &lt;&lt; <span class="number">7</span>) &amp; <span class="number">0x9d2c5680</span></span><br><span class="line">    y ^= (y &lt;&lt; <span class="number">15</span>) &amp; <span class="number">0xefc60000</span></span><br><span class="line">    y ^= y &gt;&gt; <span class="number">18</span></span><br><span class="line">    self.index = (self.index + <span class="number">1</span>) % <span class="number">624</span></span><br><span class="line">    <span class="keyword">return</span> y</span><br></pre></td></tr></table></figure>
+<h3 id="体验-2"><a href="#体验-2" class="headerlink" title="体验"></a>体验</h3>
+
+<p data-height="347" data-theme-id="0" data-slug-hash="BGJxvg" data-default-tab="result" data-user="Andiedie" data-pen-title="BGJxvg" class="codepen">See the Pen <a href="https://codepen.io/Andiedie/pen/BGJxvg/" target="_blank" rel="noopener">BGJxvg</a> by Andie (<a href="https://codepen.io/Andiedie" target="_blank" rel="noopener">@Andiedie</a>) on <a href="https://codepen.io" target="_blank" rel="noopener">CodePen</a>.</p>
+<script async src="https://static.codepen.io/assets/embed/ei.js"></script>
+
+
+<h3 id="优缺点-1"><a href="#优缺点-1" class="headerlink" title="优缺点"></a>优缺点</h3><p>优点：</p>
+<ul>
+<li>周期非常长，MT19973 的周期可以达到 $2^{19973} - 1$。</li>
+<li>均匀性好。</li>
+<li>速度非常快，基本都是位运算。</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li>空间成本高，需要 2.5 KB 的缓存空间。（之后原作者又推出了仅占用 127 bits 的 TinyMT ）</li>
+<li>不是密码学安全的伪随机数生成器。由于提取函数是可逆的位运算，暴露了内部状态，因此梅森旋转算法是可以爆破的。</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li>随机数. (2018, August 21). Retrieved from 维基百科, 自由的百科全书: <a href="https://zh.wikipedia.org/w/index.php?title=%E9%9A%8F%E6%9C%BA%E6%95%B0&amp;oldid=50958514" target="_blank" rel="noopener">https://zh.wikipedia.org/w/index.php?title=%E9%9A%8F%E6%9C%BA%E6%95%B0&amp;oldid=50958514</a></li>
+<li>密码学安全伪随机数生成器. (2018, October 9). Retrieved from 维基百科, 自由的百科全书: <a href="https://zh.wikipedia.org/w/index.php?title=%E5%AF%86%E7%A0%81%E5%AD%A6%E5%AE%89%E5%85%A8%E4%BC%AA%E9%9A%8F%E6%9C%BA%E6%95%B0%E7%94%9F%E6%88%90%E5%99%A8&amp;oldid=51577215" target="_blank" rel="noopener">https://zh.wikipedia.org/w/index.php?title=%E5%AF%86%E7%A0%81%E5%AD%A6%E5%AE%89%E5%85%A8%E4%BC%AA%E9%9A%8F%E6%9C%BA%E6%95%B0%E7%94%9F%E6%88%90%E5%99%A8&amp;oldid=51577215</a></li>
+<li>平方取中法. (2018, April 29). Retrieved from 维基百科, 自由的百科全书: <a href="https://zh.wikipedia.org/w/index.php?title=%E5%B9%B3%E6%96%B9%E5%8F%96%E4%B8%AD%E6%B3%95&amp;oldid=49350258" target="_blank" rel="noopener">https://zh.wikipedia.org/w/index.php?title=%E5%B9%B3%E6%96%B9%E5%8F%96%E4%B8%AD%E6%B3%95&amp;oldid=49350258</a></li>
+<li>线性同余方法. (2018, April 29). Retrieved from 维基百科, 自由的百科全书: <a href="https://zh.wikipedia.org/w/index.php?title=%E7%B7%9A%E6%80%A7%E5%90%8C%E9%A4%98%E6%96%B9%E6%B3%95&amp;oldid=49350290" target="_blank" rel="noopener">https://zh.wikipedia.org/w/index.php?title=%E7%B7%9A%E6%80%A7%E5%90%8C%E9%A4%98%E6%96%B9%E6%B3%95&amp;oldid=49350290</a></li>
+<li>梅森旋转算法. (2018, July 30). Retrieved from 维基百科, 自由的百科全书: <a href="https://zh.wikipedia.org/w/index.php?title=%E6%A2%85%E6%A3%AE%E6%97%8B%E8%BD%AC%E7%AE%97%E6%B3%95&amp;oldid=50644255" target="_blank" rel="noopener">https://zh.wikipedia.org/w/index.php?title=%E6%A2%85%E6%A3%AE%E6%97%8B%E8%BD%AC%E7%AE%97%E6%B3%95&amp;oldid=50644255</a></li>
+</ul>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+      <div>
+        
+
+
+
+  
+
+
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Andie</li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    
+    <a href="http://blog.andiedie.cn/posts/d02e/" title="随机数是如何生成的">http://blog.andiedie.cn/posts/d02e/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/posts/5fe4/" rel="next" title="实训报告 2nd">
+                <i class="fa fa-chevron-left"></i> 实训报告 2nd
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/posts/df57/" rel="prev" title="基于 Android Accessibility 实现一键拨打微信电话">
+                基于 Android Accessibility 实现一键拨打微信电话 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar-smile.png" alt="Andie">
+            
+              <p class="site-author-name" itemprop="name">Andie</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">16</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">5</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/feed.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/Andiedie" title="GitHub &rarr; https://github.com/Andiedie" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:zchangan@163.com" title="E-Mail &rarr; mailto:zchangan@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            </div>
+          
+
+          
+             <div class="cc-license motion-element" itemprop="license">
+              
+                
+              
+              
+              
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+             </div>
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-随机数概念"><span class="nav-text">1. 随机数概念</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-统计学伪随机数算法"><span class="nav-text">2. 统计学伪随机数算法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-平方取中法-Middle-square-method"><span class="nav-text">2.1. 平方取中法 Middle-square method</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#算法描述"><span class="nav-text">算法描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#简单实现"><span class="nav-text">简单实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#体验"><span class="nav-text">体验</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题"><span class="nav-text">问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-线性同余方法-Linear-congruential-generator"><span class="nav-text">2.2. 线性同余方法 Linear congruential generator</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#算法描述-1"><span class="nav-text">算法描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#简单实现-1"><span class="nav-text">简单实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#体验-1"><span class="nav-text">体验</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#优缺点"><span class="nav-text">优缺点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-梅森旋转算法-Mersenne-twister"><span class="nav-text">2.3. 梅森旋转算法 Mersenne twister</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#算法描述-2"><span class="nav-text">算法描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#简单实现-2"><span class="nav-text">简单实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#体验-2"><span class="nav-text">体验</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#优缺点-1"><span class="nav-text">优缺点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-text">参考</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Andie</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.7.0"></script>
+
+  <script src="/js/src/motion.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/affix.js?v=6.7.0"></script>
+
+  <script src="/js/src/schemes/pisces.js?v=6.7.0"></script>
+
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=6.7.0"></script>
+<script src="/js/src/post-details.js?v=6.7.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+
+
+  
+
+<script src="//cdn1.lncld.net/static/js/3.11.1/av-min.js"></script>
+
+
+
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+
+<script>
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(function (item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: true,
+    appId: 'VVPQKgngmGHeLTvsuOfEB25g-gzGzoHsz',
+    appKey: 'ayIKVGYRUpGNN6IJHzR7H2kS',
+    placeholder: 'Comment here',
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: true
+  });
+</script>
+
+
+
+  
+
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+      }
+      else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+  
+
+  
+  
+
+  
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+  
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      
+      equationNumbers: {
+        autoNumber: "AMS"
+      }
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+      for (i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+<style>
+.MathJax_Display {
+  overflow: auto hidden;
+}
+</style>
+
+    
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  <style>
+    .copy-btn {
+      display: inline-block;
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 20px;
+      color: #333;
+      white-space: nowrap;
+      vertical-align: middle;
+      cursor: pointer;
+      background-color: #eee;
+      background-image: linear-gradient(#fcfcfc, #eee);
+      border: 1px solid #d5d5d5;
+      border-radius: 3px;
+      user-select: none;
+      outline: 0;
+    }
+
+    .highlight-wrap .copy-btn {
+      transition: opacity .3s ease-in-out;
+      opacity: 0;
+      padding: 2px 6px;
+      position: absolute;
+      right: 4px;
+      top: 8px;
+    }
+
+    .highlight-wrap:hover .copy-btn,
+    .highlight-wrap .copy-btn:focus {
+      opacity: 1
+    }
+
+    .highlight-wrap {
+      position: relative;
+    }
+  </style>
+  <script>
+    $('.highlight').each(function (i, e) {
+      var $wrap = $('<div>').addClass('highlight-wrap');
+      $(e).after($wrap);
+      $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function (e) {
+        var code = $(this).parent().find('.code').find('.line').map(function (i, e) {
+          return $(e).text();
+        }).toArray().join('\n');
+        var ta = document.createElement('textarea');
+        var range = document.createRange(); //For Chrome
+        var sel = window.getSelection(); //For Chrome
+        var yPosition = window.pageYOffset || document.documentElement.scrollTop;
+        ta.style.top = yPosition + 'px'; //Prevent page scroll
+        ta.style.position = 'absolute';
+        ta.style.opacity = '0';
+        ta.value = code;
+        ta.textContent = code; //For FireFox
+        ta.contentEditable = true;
+        ta.readOnly = false;
+        document.body.appendChild(ta);
+        range.selectNode(ta);
+        sel.removeAllRanges();
+        sel.addRange(range);
+        ta.setSelectionRange(0, code.length);
+        var result = document.execCommand('copy');
+        
+          if (result) $(this).text('复制成功');
+          else $(this).text('复制失败');
+        
+        ta.blur(); //For iOS
+        $(this).blur();
+      })).on('mouseleave', function (e) {
+        var $b = $(this).find('.copy-btn');
+        setTimeout(function () {
+          $b.text('复制');
+        }, 300);
+      }).append(e);
+    })
+  </script>
+
+
+  
+
+</body>
+</html>

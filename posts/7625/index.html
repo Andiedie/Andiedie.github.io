@@ -1,0 +1,1545 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html class="theme-next gemini" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+  <meta name="google-site-verification" content="aKFe-l6Y-FYv_TGfjx70Zpmqy38r4zTmQEf8Gal6Gcs">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link rel="stylesheet" href="//fonts.lug.ustc.edu.cn/css?family=Lato:300,300italic,400,400italic,700,700italic|Rationale:300,300italic,400,400italic,700,700italic|Source Code Pro:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext">
+  
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=6.7.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-smile.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-smile.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-smile.png?v=6.7.0">
+
+
+  <link rel="mask-icon" href="/images/smile.svg?v=6.7.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.7.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="本文主要介绍我入坑 TypeScript 以后总结的一些相关配置，包括：  TypeScript 安装、配置与调试 TSLint 配置 TypeScript 编写与发布 npm 包 TypeScript 与 webpack、babel TypeScript 测试与覆盖率">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TypeScript 初入坑">
+<meta property="og:url" content="http://blog.andiedie.cn/posts/7625/index.html">
+<meta property="og:site_name" content="Andie&#39;s Blog">
+<meta property="og:description" content="本文主要介绍我入坑 TypeScript 以后总结的一些相关配置，包括：  TypeScript 安装、配置与调试 TSLint 配置 TypeScript 编写与发布 npm 包 TypeScript 与 webpack、babel TypeScript 测试与覆盖率">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-01-24T07:00:37.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="TypeScript 初入坑">
+<meta name="twitter:description" content="本文主要介绍我入坑 TypeScript 以后总结的一些相关配置，包括：  TypeScript 安装、配置与调试 TSLint 配置 TypeScript 编写与发布 npm 包 TypeScript 与 webpack、babel TypeScript 测试与覆盖率">
+
+
+
+  <link rel="alternate" href="/feed.xml" title="Andie's Blog" type="application/atom+xml">
+
+
+
+
+  <link rel="canonical" href="http://blog.andiedie.cn/posts/7625/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>TypeScript 初入坑 | Andie's Blog</title>
+  
+
+
+
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-126454098-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-126454098-1');
+  </script>
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Andie's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.andiedie.cn/posts/7625/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Andie">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar-smile.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Andie's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">TypeScript 初入坑
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-12-10 20:17:37" itemprop="dateCreated datePublished" datetime="2018-12-10T20:17:37+08:00">2018-12-10</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-01-24 15:00:37" itemprop="dateModified" datetime="2019-01-24T15:00:37+08:00">2019-01-24</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Tutorial/" itemprop="url" rel="index"><span itemprop="name">Tutorial</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/posts/7625/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/posts/7625/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+            <span id="/posts/7625/" class="leancloud_visitors" data-flag-title="TypeScript 初入坑">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文主要介绍我入坑 TypeScript 以后总结的一些相关配置，包括：</p>
+<ul>
+<li>TypeScript 安装、配置与调试</li>
+<li>TSLint 配置</li>
+<li>TypeScript 编写与发布 npm 包</li>
+<li>TypeScript 与 webpack、babel</li>
+<li>TypeScript 测试与覆盖率</li>
+</ul>
+<a id="more"></a>
+<h1 id="1-TypeScript-基本配置"><a href="#1-TypeScript-基本配置" class="headerlink" title="1. TypeScript 基本配置"></a>1. TypeScript 基本配置</h1><h2 id="1-1-安装-TypeScript"><a href="#1-1-安装-TypeScript" class="headerlink" title="1.1. 安装 TypeScript"></a>1.1. 安装 TypeScript</h2><p>全局安装：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn global add typescript</span><br></pre></td></tr></table></figure>
+<p>不过我个人还是更加推荐在每个 TypeScript 项目下都安装一个开发依赖：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn add -D typescript</span><br></pre></td></tr></table></figure>
+<p>如果是在 Node.js 环境下编写，还推荐安装相应的类型声明：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn add -D @types/node</span><br></pre></td></tr></table></figure>
+<p>安装完后可以使用 <code>tsc</code> 对 TypeScript 文件进行编译：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 全局安装</span></span><br><span class="line">tsc test.ts</span><br><span class="line"><span class="comment"># 项目安装</span></span><br><span class="line">npx tsc test.ts</span><br></pre></td></tr></table></figure>
+<p>使用 <code>tsc --help</code> 可以查看到编译选项。</p>
+<h2 id="1-2-配置-tsconfig-json"><a href="#1-2-配置-tsconfig-json" class="headerlink" title="1.2. 配置 tsconfig.json"></a>1.2. 配置 tsconfig.json</h2><p><code>tsc</code> 提供的编译选项十分丰富，我们也经常需要在项目编译时指定一些参数，然后每次编译时都手动输入这些参数非常麻烦，我们可以在项目根目录创建 <code>tsconfig.json</code> 文件作为配置文件，运行 <code>tsc</code> 且不指定输入文件时，会默认应用文件中的配置。</p>
+<p>一个简单的 <code>tsconfig.json</code> 如下：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"compilerOptions"</span>: &#123;</span><br><span class="line">    <span class="attr">"outDir"</span>: <span class="string">"./dist"</span>,</span><br><span class="line">    <span class="attr">"noImplicitAny"</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">"module"</span>: <span class="string">"CommonJS"</span>,</span><br><span class="line">    <span class="attr">"declaration"</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">"target"</span>: <span class="string">"ES2015"</span>,</span><br><span class="line">    <span class="attr">"strict"</span>: <span class="literal">true</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"include"</span>: [<span class="string">"src"</span>],</span><br><span class="line">  <span class="attr">"exclude"</span>: [<span class="string">"node_modules"</span>]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>outDir</code> 指定了目标文件输出位置</li>
+<li><code>noImplicitAny</code> 检查在源代码中不能有隐式声明的 <code>Any</code> 类型</li>
+<li><code>module</code> 指定了模块规范</li>
+<li><code>declaration</code> 输出目标文件时同时输出类型声明文件</li>
+<li><code>target</code> 指定 JavaScript 的版本</li>
+<li><code>strict</code> 严格模式</li>
+<li><code>include</code> 和 <code>exclude</code> 指定输入和排除目录</li>
+</ul>
+<p>详细配置可见 <a href="https://www.typescriptlang.org/docs/handbook/tsconfig-json.html" target="_blank" rel="noopener">tsconfig.json</a> 。</p>
+<p>配置完后直接运行 <code>tsc</code> 即可。</p>
+<h2 id="1-3-调试-TypeScript"><a href="#1-3-调试-TypeScript" class="headerlink" title="1.3. 调试 TypeScript"></a>1.3. 调试 TypeScript</h2><p>这里演示如何在 VS Code 中调试 TypeScript。</p>
+<p>调试的配置文件位于 <code>.vscode/launch.json</code>，建议将整个 <code>.vscode</code> 文件夹加入 <code>.gitignore</code>中。</p>
+<h3 id="调试编译后的-JavaScript"><a href="#调试编译后的-JavaScript" class="headerlink" title="调试编译后的 JavaScript"></a>调试编译后的 JavaScript</h3><p>一种最简单的方法是调试编译后的 JavaScript：</p>
+<p>在 <code>.vscode/launch.json</code> 中加入配置：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"version"</span>: <span class="string">"0.2.0"</span>,</span><br><span class="line">  <span class="attr">"configurations"</span>: [</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="attr">"type"</span>: <span class="string">"node"</span>,</span><br><span class="line">      <span class="attr">"request"</span>: <span class="string">"launch"</span>,</span><br><span class="line">      <span class="attr">"name"</span>: <span class="string">"Debug JavaScript"</span>,</span><br><span class="line">      <span class="attr">"program"</span>: <span class="string">"$&#123;workspaceRoot&#125;/dist/index.js"</span>,</span><br><span class="line">      <span class="attr">"args"</span>: [],</span><br><span class="line">      <span class="attr">"protocol"</span>: <span class="string">"inspector"</span>,</span><br><span class="line">      <span class="attr">"cwd"</span>: <span class="string">"$&#123;workspaceRoot&#125;"</span></span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="直接调试-TypeScript"><a href="#直接调试-TypeScript" class="headerlink" title="直接调试 TypeScript"></a>直接调试 TypeScript</h3><p>直接调试 JavaScript 的好处是配置简单、但每次都需要显式地编译非常麻烦。这里使用 <code>ts-node</code> 作为运行环境，就可以直接调试 TypeScript 了。</p>
+<p>安装 <code>ts-node</code>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn add -D ts-node</span><br></pre></td></tr></table></figure>
+<p>在 <code>tsconfig.json</code> 中开启 <code>sourceMap</code>：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"compilerOptions"</span>: &#123;</span><br><span class="line">    <span class="attr">"outDir"</span>: <span class="string">"./dist"</span>,</span><br><span class="line">    <span class="attr">"noImplicitAny"</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">"module"</span>: <span class="string">"CommonJS"</span>,</span><br><span class="line">    <span class="attr">"declaration"</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">"target"</span>: <span class="string">"ES2015"</span>,</span><br><span class="line">    <span class="attr">"strict"</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">"sourceMap"</span>: <span class="literal">true</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"include"</span>: [<span class="string">"src"</span>],</span><br><span class="line">  <span class="attr">"exclude"</span>: [<span class="string">"node_modules"</span>]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>配置 <code>.vscode/launch.json</code>：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"version"</span>: <span class="string">"0.2.0"</span>,</span><br><span class="line">  <span class="attr">"configurations"</span>: [</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="attr">"type"</span>: <span class="string">"node"</span>,</span><br><span class="line">      <span class="attr">"request"</span>: <span class="string">"launch"</span>,</span><br><span class="line">      <span class="attr">"name"</span>: <span class="string">"Debug TypeScript"</span>,</span><br><span class="line">      <span class="attr">"args"</span>: [<span class="string">"$&#123;relativeFile&#125;"</span>],</span><br><span class="line">      <span class="attr">"runtimeArgs"</span>: [<span class="string">"--nolazy"</span>, <span class="string">"-r"</span>, <span class="string">"ts-node/register"</span>],</span><br><span class="line">      <span class="attr">"sourceMaps"</span>: <span class="literal">true</span>,</span><br><span class="line">      <span class="attr">"protocol"</span>: <span class="string">"inspector"</span>,</span><br><span class="line">      <span class="attr">"cwd"</span>: <span class="string">"$&#123;workspaceRoot&#125;"</span></span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="2-TSLint"><a href="#2-TSLint" class="headerlink" title="2. TSLint"></a>2. TSLint</h1><h2 id="2-1-基本配置"><a href="#2-1-基本配置" class="headerlink" title="2.1. 基本配置"></a>2.1. 基本配置</h2><p>编写 JavaScript 时一般会使用 ESLint 对代码进行检查。同样的， 在 TypeScript 中我们使用 TSLint。</p>
+<p>首先需要安装依赖：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn add -D tslint</span><br></pre></td></tr></table></figure>
+<p>接着进行配置，在根目录创建 <code>tslint.json</code> 文件，一个典型的例子：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"extends"</span>: [<span class="string">"tslint:recommended"</span>],</span><br><span class="line">  <span class="attr">"rules"</span>: &#123;</span><br><span class="line">      <span class="attr">"quotemark"</span>: [<span class="literal">true</span>, <span class="string">"single"</span>],</span><br><span class="line">      <span class="attr">"no-empty"</span>: [<span class="literal">true</span>, <span class="string">"allow-empty-functions"</span>],</span><br><span class="line">      <span class="attr">"trailing-comma"</span>: [<span class="literal">true</span>, &#123;<span class="attr">"multiline"</span>: <span class="string">"always"</span>, <span class="attr">"singleline"</span>: <span class="string">"never"</span>&#125;],</span><br><span class="line">      <span class="attr">"interface-name"</span>: <span class="literal">false</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>extends</code> 预设的规则模板</li>
+<li><code>rules</code> 自定义规则</li>
+</ul>
+<p>以上是我通常使用的规则，它在推荐规则的基础上，将字符串改为单引号、允许空函数、要求行尾逗号以及不要求接口名称必须以 I 开头。</p>
+<p>完成安装和配置就可以对代码进行检查了：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npx tslint -p tsconfig.json</span><br></pre></td></tr></table></figure>
+<h2 id="2-2-VS-Code-配置"><a href="#2-2-VS-Code-配置" class="headerlink" title="2.2. VS Code 配置"></a>2.2. VS Code 配置</h2><p>让 VS Code 支持 TSLint 错误显示和自动修复，需要在 VS Code 中安装 <code>TSLint</code> 插件。</p>
+<p>在设置中将 TSLint 插件的 <code>Auto Fix On Save</code> 功能打开即可。</p>
+<h1 id="3-TypeScript-发布-npm-包"><a href="#3-TypeScript-发布-npm-包" class="headerlink" title="3. TypeScript 发布 npm 包"></a>3. TypeScript 发布 npm 包</h1><p>为了兼容 JavaScript 社区，发布到 npm 的包必须是 JavaScript 而不是 TypeScript。</p>
+<p>所以发布一个包的步骤变为：</p>
+<ol>
+<li>编译 TypeScript</li>
+<li>让 npm 只识别编译后的 JavaScript</li>
+<li>发布</li>
+</ol>
+<h2 id="3-1-编译"><a href="#3-1-编译" class="headerlink" title="3.1. 编译"></a>3.1. 编译</h2><p>在 npm scripts 中添加 <code>build</code>：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">"scripts": &#123;</span><br><span class="line">    "build": "tsc"</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="3-2-修改-npm-files"><a href="#3-2-修改-npm-files" class="headerlink" title="3.2. 修改 npm files"></a>3.2. 修改 npm files</h2><p>在 <code>package.json</code> 中新加一个字段 <code>files</code> 指定 npm 识别的文件：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">"files": [</span><br><span class="line">	<span class="string">"dist/**/*"</span></span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<p>这样当 npm 发布包的时候，就只会放 <code>files</code> 字段中指定的文件打包发布。当然，npm 会自动识别 <code>LICENSE</code>、<code>README.md</code> 和 <code>package.json</code>。</p>
+<p>按照如上配置，最后发布的包的目录结构为：</p>
+<ul>
+<li><code>dist</code><ul>
+<li><code>index.js</code></li>
+<li><code>...</code></li>
+</ul>
+</li>
+<li><code>LICENSE</code></li>
+<li><code>package.json</code></li>
+<li><code>README.md</code></li>
+</ul>
+<h2 id="3-3-自动化"><a href="#3-3-自动化" class="headerlink" title="3.3. 自动化"></a>3.3. 自动化</h2><p>谁都不想每次 <code>npm publish</code> 前都手动运行一次 <code>yarn build</code> ，因此你可以再添加一个 npm scripts：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">"scripts": &#123;</span><br><span class="line">    "build": "tsc",</span><br><span class="line">    "prepublishOnly": "yarn bulid"</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样每次 <code>npm publish</code> 前就会自动进行编译。</p>
+<h2 id="3-4-避免丢失类型声明"><a href="#3-4-避免丢失类型声明" class="headerlink" title="3.4. 避免丢失类型声明"></a>3.4. 避免丢失类型声明</h2><p>为了兼容 JavaScript 社区，我们往 npm 发布了编译后的 JavaScript 代码，但编译成 JavaScript 后会失去类型声明。</p>
+<p>我们可以在 <code>tsconfig.json</code> 中将 <code>declaration</code> 设为 <code>true</code>，使得编译时输出类型声明文件。</p>
+<p>这样发布的 npm 包目录如下：</p>
+<ul>
+<li><code>dist</code><ul>
+<li><code>index.js</code></li>
+<li><code>index.d.ts</code></li>
+<li><code>…</code></li>
+</ul>
+</li>
+<li><code>LICENSE</code></li>
+<li><code>package.json</code></li>
+<li><code>README.md</code></li>
+</ul>
+<p>这样，JavaScript 和 TypeScript 都可以正常引用编译后的代码，且 TypeScript 还会自动引用同目录下的类型声明文件。（在 VS Code 下，JavaScript 也会自动引用类型声明文件作为代码提示。）</p>
+<h1 id="4-TypeScript-与-webpack"><a href="#4-TypeScript-与-webpack" class="headerlink" title="4. TypeScript 与 webpack"></a>4. TypeScript 与 webpack</h1><h2 id="4-1-webpack-篇"><a href="#4-1-webpack-篇" class="headerlink" title="4.1. webpack 篇"></a>4.1. webpack 篇</h2><p>如果使用 TypeScript 编写浏览器上运行的代码，一般需要配合 webpack 工作。</p>
+<p>首先安装依赖：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn add -D webpack webpack-cli awesome-typescript-loader</span><br></pre></td></tr></table></figure>
+<p>在项目根目录下创建 webpack 配置文件 <code>webpack.config.js</code>：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">'path'</span>);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">generateConfig</span>(<span class="params">name</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> mode = name.includes(<span class="string">'min'</span>) ? <span class="string">'production'</span> : <span class="string">'development'</span>;</span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    entry: <span class="string">'./src/index.ts'</span>,</span><br><span class="line">    mode,</span><br><span class="line">    <span class="built_in">module</span>: &#123;</span><br><span class="line">      rules: [</span><br><span class="line">        &#123;</span><br><span class="line">          test: <span class="regexp">/\.ts?$/</span>,</span><br><span class="line">          loader: <span class="string">'awesome-typescript-loader'</span>,</span><br><span class="line">        &#125;,</span><br><span class="line">      ],</span><br><span class="line">    &#125;,</span><br><span class="line">    resolve: &#123;</span><br><span class="line">      extensions: [ <span class="string">'.ts'</span>, <span class="string">'.js'</span> ],</span><br><span class="line">    &#125;,</span><br><span class="line">    output: &#123;</span><br><span class="line">      filename: <span class="string">`<span class="subst">$&#123;name&#125;</span>.js`</span>,</span><br><span class="line">      path: path.resolve(__dirname, <span class="string">'dist'</span>),</span><br><span class="line">      library: <span class="string">'Test'</span>,</span><br><span class="line">      libraryTarget: <span class="string">'umd'</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">    devtool: <span class="string">'source-map'</span>,</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = [generateConfig(<span class="string">'test'</span>), generateConfig(<span class="string">'test.min'</span>)];</span><br></pre></td></tr></table></figure>
+<p>这里的配置文件一次性生成了两个配置：</p>
+<ul>
+<li>在开发环境下编译 <code>index.ts</code> 为 <code>test.js</code>，并生成 source map：在这种情况下，输出代码不会被压缩。</li>
+<li>在生产环境下编译 <code>index.ts</code> 为 <code>test.min.js</code>，并生成 source map：在这种情况下，输出代码会被压缩。</li>
+</ul>
+<p>注意：上述配置第 22 和 23 行定义了输出为 <code>library</code>，即只要运行编译后的代码，入口就会被自动挂载到浏览器的全局下。</p>
+<p>例如 <code>JQuery</code> 可以这么配置：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">output: &#123;</span><br><span class="line">    filename: <span class="string">'jquery.min.js'</span>,</span><br><span class="line">    path: path.resolve(__dirname, <span class="string">'dist'</span>),</span><br><span class="line">    library: <span class="string">'$'</span>,</span><br><span class="line">    libraryTarget: <span class="string">'umd'</span></span><br><span class="line">&#125;,</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>配置完成后，运行下面的命令进行编译：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npx webpack</span><br></pre></td></tr></table></figure>
+<h2 id="4-2-Babel-篇"><a href="#4-2-Babel-篇" class="headerlink" title="4.2. Babel 篇"></a>4.2. Babel 篇</h2><p>为了将新版本的 JavaScript 特性翻译成兼容性更高的 JavaScript，我们需要引入 Babel。</p>
+<p>首先安装依赖：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn add -D @babel/core @babel/plugin-transform-runtime @babel/preset-env @babel/preset-typescript @babel/runtime babel-loader</span><br></pre></td></tr></table></figure>
+<p>修改 <code>webpack.config.js</code>：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">'path'</span>);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">generateConfig</span>(<span class="params">name</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> mode = name.includes(<span class="string">'min'</span>) ? <span class="string">'production'</span> : <span class="string">'development'</span>;</span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    entry: <span class="string">'./src/index.ts'</span>,</span><br><span class="line">    mode,</span><br><span class="line">    <span class="built_in">module</span>: &#123;</span><br><span class="line">      rules: [</span><br><span class="line">        &#123;</span><br><span class="line">          test: <span class="regexp">/\.ts?$/</span>,</span><br><span class="line">          loader: [<span class="string">'babel-loader'</span>, <span class="string">'awesome-typescript-loader'</span>],</span><br><span class="line">        &#125;,</span><br><span class="line">      ],</span><br><span class="line">    &#125;,</span><br><span class="line">    resolve: &#123;</span><br><span class="line">      extensions: [ <span class="string">'.ts'</span>, <span class="string">'.js'</span> ],</span><br><span class="line">    &#125;,</span><br><span class="line">    output: &#123;</span><br><span class="line">      filename: <span class="string">`<span class="subst">$&#123;name&#125;</span>.js`</span>,</span><br><span class="line">      path: path.resolve(__dirname, <span class="string">'dist'</span>),</span><br><span class="line">      library: <span class="string">'Test'</span>,</span><br><span class="line">      libraryTarget: <span class="string">'umd'</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">    devtool: <span class="string">'source-map'</span>,</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = [generateConfig(<span class="string">'test'</span>), generateConfig(<span class="string">'test.min'</span>)];</span><br></pre></td></tr></table></figure>
+<p>唯一的变化是 12 行，<code>loader</code> 中加入了 <code>babel-loader</code>。</p>
+<p>接下来在项目根目录新建 Babel 配置文件 <code>.babelrc</code>，典型配置如下：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"plugins"</span>: [<span class="string">"@babel/plugin-transform-runtime"</span>],</span><br><span class="line">  <span class="attr">"presets"</span>: [</span><br><span class="line">    <span class="string">"@babel/typescript"</span>,</span><br><span class="line">    [<span class="string">"@babel/env"</span>, &#123;</span><br><span class="line">      <span class="attr">"modules"</span>: <span class="string">"umd"</span>,</span><br><span class="line">      <span class="attr">"targets"</span>: &#123;</span><br><span class="line">        <span class="attr">"browsers"</span>: [ <span class="string">"&gt;1%"</span> ]</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;]</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>编译后的版本将支持使用率大于 1% 的浏览器。</p>
+<h1 id="5-TypeScript-测试"><a href="#5-TypeScript-测试" class="headerlink" title="5. TypeScript 测试"></a>5. TypeScript 测试</h1><h2 id="5-1-使用-Mocha-测试"><a href="#5-1-使用-Mocha-测试" class="headerlink" title="5.1. 使用 Mocha 测试"></a>5.1. 使用 Mocha 测试</h2><p>这里使用的测试框架是 Mocha，断言库是简单优秀的的 power-assert。</p>
+<p>安装依赖：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn add -D mocha @types/mocha power-assert espower-typescript</span><br></pre></td></tr></table></figure>
+<p>假定现在目录结构如下：</p>
+<ul>
+<li>index.ts</li>
+<li>test<ul>
+<li>index.test.ts</li>
+</ul>
+</li>
+</ul>
+<p>其中 <code>index.ts</code> ：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">add</span>(<span class="params">a: <span class="built_in">number</span>, b: <span class="built_in">number</span></span>): <span class="title">number</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> a + b;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>index.test.ts</code>：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> assert = <span class="built_in">require</span>(<span class="string">'assert'</span>);</span><br><span class="line"><span class="keyword">import</span> &#123; add &#125; <span class="keyword">from</span> <span class="string">'../index'</span>;</span><br><span class="line"></span><br><span class="line">describe(<span class="string">'Test add function'</span>, <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">  it(<span class="string">'Add'</span>, <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    assert(add(<span class="number">1</span>, <span class="number">2</span>) === <span class="number">3</span>);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>在 npm scripts 中添加：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">"scripts": &#123;</span><br><span class="line">    "test": "mocha --require espower-typescript/guess test/**/*.ts"</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行测试：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn <span class="built_in">test</span></span><br></pre></td></tr></table></figure>
+<h2 id="5-2-使用-istanbul-生成覆盖率报告"><a href="#5-2-使用-istanbul-生成覆盖率报告" class="headerlink" title="5.2. 使用 istanbul 生成覆盖率报告"></a>5.2. 使用 istanbul 生成覆盖率报告</h2><p>首先安装依赖：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn add -D istanbul@1.1.0-alpha.1 ts-node</span><br></pre></td></tr></table></figure>
+<p>注意这里必须安装 <code>1.1.0-alpha.1</code> 版本的 <code>istanbul</code>。</p>
+<p>在 npm scripts 中添加：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">"scripts": &#123;</span><br><span class="line">    "coverage": "istanbul cover -e .ts _mocha -- --require ts-node/register test/**/*.ts"</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里用来生成覆盖率的命令有些复杂，解析如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">istanbul \						<span class="comment"># istanbul 命令</span></span><br><span class="line">cover \							<span class="comment"># istanbul 子命令</span></span><br><span class="line">-e .ts \						<span class="comment"># istanbul 参数，指定 .ts 文件</span></span><br><span class="line">_mocha \						<span class="comment"># 在同一个进程内运行 mocha 保证 istanbul 能获得输出</span></span><br><span class="line">-- \							<span class="comment"># 两短横线后的参数会传递给 mocha 而非 istanbul</span></span><br><span class="line">--require ts-node/register \	<span class="comment"># 使用 ts-node 编译</span></span><br><span class="line"><span class="built_in">test</span>/**/*.ts					<span class="comment"># 测试文件</span></span><br></pre></td></tr></table></figure>
+<p>运行 <code>yarn coverage</code> 就会跑完测试代码并在 <code>coverage</code> 目录下生成覆盖率报告。建议将 <code>coverage</code> 添加到 <code>.gitignore</code>。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+      <div>
+        
+
+
+
+  
+
+
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Andie</li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    
+    <a href="http://blog.andiedie.cn/posts/7625/" title="TypeScript 初入坑">http://blog.andiedie.cn/posts/7625/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/posts/df57/" rel="next" title="基于 Android Accessibility 实现一键拨打微信电话">
+                <i class="fa fa-chevron-left"></i> 基于 Android Accessibility 实现一键拨打微信电话
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/posts/cc67/" rel="prev" title="Mocha 复用测试用例">
+                Mocha 复用测试用例 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar-smile.png" alt="Andie">
+            
+              <p class="site-author-name" itemprop="name">Andie</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">16</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">5</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/feed.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/Andiedie" title="GitHub &rarr; https://github.com/Andiedie" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:zchangan@163.com" title="E-Mail &rarr; mailto:zchangan@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            </div>
+          
+
+          
+             <div class="cc-license motion-element" itemprop="license">
+              
+                
+              
+              
+              
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+             </div>
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-TypeScript-基本配置"><span class="nav-text">1. TypeScript 基本配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-安装-TypeScript"><span class="nav-text">1.1. 安装 TypeScript</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-配置-tsconfig-json"><span class="nav-text">1.2. 配置 tsconfig.json</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3-调试-TypeScript"><span class="nav-text">1.3. 调试 TypeScript</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#调试编译后的-JavaScript"><span class="nav-text">调试编译后的 JavaScript</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#直接调试-TypeScript"><span class="nav-text">直接调试 TypeScript</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-TSLint"><span class="nav-text">2. TSLint</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-基本配置"><span class="nav-text">2.1. 基本配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-VS-Code-配置"><span class="nav-text">2.2. VS Code 配置</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-TypeScript-发布-npm-包"><span class="nav-text">3. TypeScript 发布 npm 包</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-编译"><span class="nav-text">3.1. 编译</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-修改-npm-files"><span class="nav-text">3.2. 修改 npm files</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-3-自动化"><span class="nav-text">3.3. 自动化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-4-避免丢失类型声明"><span class="nav-text">3.4. 避免丢失类型声明</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-TypeScript-与-webpack"><span class="nav-text">4. TypeScript 与 webpack</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#4-1-webpack-篇"><span class="nav-text">4.1. webpack 篇</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-2-Babel-篇"><span class="nav-text">4.2. Babel 篇</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-TypeScript-测试"><span class="nav-text">5. TypeScript 测试</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#5-1-使用-Mocha-测试"><span class="nav-text">5.1. 使用 Mocha 测试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-2-使用-istanbul-生成覆盖率报告"><span class="nav-text">5.2. 使用 istanbul 生成覆盖率报告</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Andie</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.7.0"></script>
+
+  <script src="/js/src/motion.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/affix.js?v=6.7.0"></script>
+
+  <script src="/js/src/schemes/pisces.js?v=6.7.0"></script>
+
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=6.7.0"></script>
+<script src="/js/src/post-details.js?v=6.7.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+
+
+  
+
+<script src="//cdn1.lncld.net/static/js/3.11.1/av-min.js"></script>
+
+
+
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+
+<script>
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(function (item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: true,
+    appId: 'VVPQKgngmGHeLTvsuOfEB25g-gzGzoHsz',
+    appKey: 'ayIKVGYRUpGNN6IJHzR7H2kS',
+    placeholder: 'Comment here',
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: true
+  });
+</script>
+
+
+
+  
+
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+      }
+      else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+  
+
+  
+  
+
+  
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  <style>
+    .copy-btn {
+      display: inline-block;
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 20px;
+      color: #333;
+      white-space: nowrap;
+      vertical-align: middle;
+      cursor: pointer;
+      background-color: #eee;
+      background-image: linear-gradient(#fcfcfc, #eee);
+      border: 1px solid #d5d5d5;
+      border-radius: 3px;
+      user-select: none;
+      outline: 0;
+    }
+
+    .highlight-wrap .copy-btn {
+      transition: opacity .3s ease-in-out;
+      opacity: 0;
+      padding: 2px 6px;
+      position: absolute;
+      right: 4px;
+      top: 8px;
+    }
+
+    .highlight-wrap:hover .copy-btn,
+    .highlight-wrap .copy-btn:focus {
+      opacity: 1
+    }
+
+    .highlight-wrap {
+      position: relative;
+    }
+  </style>
+  <script>
+    $('.highlight').each(function (i, e) {
+      var $wrap = $('<div>').addClass('highlight-wrap');
+      $(e).after($wrap);
+      $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function (e) {
+        var code = $(this).parent().find('.code').find('.line').map(function (i, e) {
+          return $(e).text();
+        }).toArray().join('\n');
+        var ta = document.createElement('textarea');
+        var range = document.createRange(); //For Chrome
+        var sel = window.getSelection(); //For Chrome
+        var yPosition = window.pageYOffset || document.documentElement.scrollTop;
+        ta.style.top = yPosition + 'px'; //Prevent page scroll
+        ta.style.position = 'absolute';
+        ta.style.opacity = '0';
+        ta.value = code;
+        ta.textContent = code; //For FireFox
+        ta.contentEditable = true;
+        ta.readOnly = false;
+        document.body.appendChild(ta);
+        range.selectNode(ta);
+        sel.removeAllRanges();
+        sel.addRange(range);
+        ta.setSelectionRange(0, code.length);
+        var result = document.execCommand('copy');
+        
+          if (result) $(this).text('复制成功');
+          else $(this).text('复制失败');
+        
+        ta.blur(); //For iOS
+        $(this).blur();
+      })).on('mouseleave', function (e) {
+        var $b = $(this).find('.copy-btn');
+        setTimeout(function () {
+          $b.text('复制');
+        }, 300);
+      }).append(e);
+    })
+  </script>
+
+
+  
+
+</body>
+</html>
